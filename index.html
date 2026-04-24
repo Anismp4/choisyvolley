@@ -550,6 +550,88 @@ body::before {
 }
 .login-error.hidden { display: none; }
 
+/* ═══ Detail Modal ═══ */
+.detail-modal {
+  position: fixed; inset: 0; z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+  padding: 20px;
+}
+.detail-modal.hidden { display: none; }
+.detail-modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.detail-modal-card {
+  position: relative; z-index: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-elevated);
+  width: 100%; max-width: 640px;
+  max-height: 90vh; overflow-y: auto;
+  animation: fadeUp 0.3s ease-out;
+}
+.detail-modal-image {
+  width: 100%; max-height: 280px; object-fit: cover;
+  border-top-left-radius: var(--radius); border-top-right-radius: var(--radius);
+  display: block;
+}
+.detail-modal-body { padding: 28px; }
+.detail-modal-tag {
+  display: inline-block; padding: 4px 10px; border-radius: 100px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--accent-soft); color: var(--accent); margin-bottom: 12px;
+}
+.detail-modal-title {
+  font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em;
+}
+.detail-modal-meta {
+  display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px;
+  color: var(--text-muted); margin-bottom: 18px;
+}
+.detail-modal-meta-item { display: flex; align-items: center; gap: 5px; }
+.detail-modal-text {
+  font-size: 15px; line-height: 1.65; color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+.detail-modal-vs {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-size: 20px; font-weight: 600; margin-bottom: 14px;
+}
+.detail-modal-vs .match-vs-badge { font-size: 12px; }
+.detail-modal-footer {
+  padding: 16px 28px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-start;
+}
+
+/* ═══ Team training rows ═══ */
+.team-trainings { display: flex; flex-direction: column; gap: 6px; }
+.team-training-line {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 8px 10px; background: var(--bg-secondary);
+  border-radius: var(--radius-xs); font-size: 13px;
+}
+.team-training-line-when { font-weight: 600; color: var(--text-primary); }
+.team-training-line-where { font-size: 12px; color: var(--text-muted); }
+
+/* ═══ Admin team form ═══ */
+.admin-training-row {
+  display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px;
+  padding: 12px; background: var(--bg-secondary);
+  border-radius: var(--radius-sm); margin-bottom: 8px;
+}
+.admin-training-row .input-label { font-size: 11px; }
+@media (max-width: 640px) {
+  .admin-training-row { grid-template-columns: 1fr; }
+}
+
+/* Card clickable feedback */
+.card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.card-clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-elevated); }
+
 /* ═══ Admin Toggle Switch ═══ */
 .toggle-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -1165,17 +1247,75 @@ body::before {
           </div>
         </div>
 
-        <!-- Admin images équipes -->
+        <!-- Admin équipes (CRUD complet) -->
         <div class="admin-panel fade-up" style="margin-top:24px">
           <div class="admin-header">
             <div class="admin-title">
-              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              Images des équipes
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              Gestion des équipes
             </div>
           </div>
           <div class="admin-body">
-            <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Ajoutez ou modifiez la photo de chaque équipe</div>
-            <div id="adminTeamImages"></div>
+            <div class="admin-form-grid">
+              <div class="input-group">
+                <label class="input-label">Nom de l'équipe</label>
+                <input class="input" placeholder="Ex: Séniors Masculins 1" id="teamName">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Catégorie</label>
+                <select class="input" id="teamCategory">
+                  <option value="Séniors">Séniors</option>
+                  <option value="Jeunes">Jeunes</option>
+                  <option value="Loisirs">Loisirs</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Niveau</label>
+                <select class="input" id="teamLevel">
+                  <option value="Régionale">Régionale</option>
+                  <option value="Départementale">Départementale</option>
+                  <option value="FSGT">FSGT</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Nombre de joueurs</label>
+                <input class="input" type="number" min="0" placeholder="Ex: 12" id="teamPlayers">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Emoji</label>
+                <input class="input" placeholder="Ex: 🏐 🌟 ✨" id="teamEmoji" maxlength="4">
+              </div>
+            </div>
+            <div class="input-group" style="margin-top:14px">
+              <label class="input-label">Entraînements (2 créneaux par semaine — gymnases différents possibles)</label>
+              <div class="admin-training-row">
+                <div class="input-group"><label class="input-label">Jour 1</label><input class="input" placeholder="Ex: Mardi" id="teamTrain1Day"></div>
+                <div class="input-group"><label class="input-label">Horaire 1</label><input class="input" placeholder="Ex: 20h-22h" id="teamTrain1Time"></div>
+                <div class="input-group"><label class="input-label">Gymnase 1</label><input class="input" placeholder="Ex: Gymnase Alice Milliat" id="teamTrain1Loc"></div>
+              </div>
+              <div class="admin-training-row">
+                <div class="input-group"><label class="input-label">Jour 2</label><input class="input" placeholder="Ex: Jeudi" id="teamTrain2Day"></div>
+                <div class="input-group"><label class="input-label">Horaire 2</label><input class="input" placeholder="Ex: 20h-22h" id="teamTrain2Time"></div>
+                <div class="input-group"><label class="input-label">Gymnase 2</label><input class="input" placeholder="Ex: Gymnase Gabriel Péri" id="teamTrain2Loc"></div>
+              </div>
+            </div>
+            <div class="input-group" style="margin-top:10px">
+              <label class="input-label">Photo de l'équipe</label>
+              <label class="image-upload-box" for="teamImage">
+                <input type="file" id="teamImage" accept="image/*" onchange="previewImage(event, 'teamImagePreview')">
+                <div class="image-upload-hint"><strong>Cliquez pour choisir</strong> une image (max 5 Mo)</div>
+                <img id="teamImagePreview" class="image-upload-preview" style="display:none">
+              </label>
+              <button type="button" class="btn btn-ghost btn-sm" id="teamImageRemoveBtn" onclick="removeImage('teamImage','teamImagePreview')" style="display:none;align-self:flex-start;color:var(--danger)">Supprimer l'image</button>
+            </div>
+            <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap">
+              <button class="btn btn-secondary" id="teamCancelBtn" onclick="cancelEditTeam()" style="display:none">Annuler</button>
+              <button class="btn btn-primary" id="teamSubmitBtn" onclick="submitTeam()">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+                <span id="teamSubmitLabel">Ajouter l'équipe</span>
+              </button>
+            </div>
+            <div class="admin-match-list" id="adminTeamList" style="margin-top:14px"></div>
           </div>
         </div>
       </div>
@@ -1235,6 +1375,20 @@ body::before {
   </div>
 </div>
 
+<!-- ═══════ DETAIL MODAL ═══════ -->
+<div class="detail-modal hidden" id="detailModal">
+  <div class="detail-modal-overlay" onclick="closeDetail()"></div>
+  <div class="detail-modal-card">
+    <div id="detailModalContent"></div>
+    <div class="detail-modal-footer">
+      <button class="btn btn-secondary" onclick="closeDetail()">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Retour
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ TOAST ═══════ -->
 <div class="toast hidden" id="toast"></div>
 
@@ -1258,13 +1412,13 @@ let news = [
 ];
 
 let teams = [
-  { id: "sm1", name: "Séniors Masculins 1", category: "Séniors", level: "Régionale", players: 12, training: "Mardi & Jeudi 20h-22h", emoji: "🏐", image: null },
-  { id: "sm2", name: "Séniors Masculins 2", category: "Séniors", level: "Départementale", players: 10, training: "Lundi & Mercredi 20h-22h", emoji: "🏐", image: null },
-  { id: "sf1", name: "Séniors Féminines 1", category: "Séniors", level: "Régionale", players: 11, training: "Mardi & Jeudi 18h-20h", emoji: "🏐", image: null },
-  { id: "m18f", name: "M18 Féminines", category: "Jeunes", level: "Départementale", players: 10, training: "Mercredi 17h-19h", emoji: "🌟", image: null },
-  { id: "m15m", name: "M15 Masculins", category: "Jeunes", level: "Départementale", players: 12, training: "Mercredi 14h-16h", emoji: "🌟", image: null },
-  { id: "m13f", name: "M13 Féminines", category: "Jeunes", level: "Départementale", players: 9, training: "Samedi 10h-12h", emoji: "🌟", image: null },
-  { id: "loisirs", name: "Loisirs FSGT", category: "Loisirs", level: "FSGT", players: 15, training: "Vendredi 20h-22h", emoji: "✨", image: null },
+  { id: "sm1", name: "Séniors Masculins 1", category: "Séniors", level: "Régionale", players: 12, trainings: [{day:"Mardi", time:"20h-22h", location:"Gymnase Alice Milliat"}, {day:"Jeudi", time:"20h-22h", location:"Gymnase Alice Milliat"}], emoji: "🏐", image: null },
+  { id: "sm2", name: "Séniors Masculins 2", category: "Séniors", level: "Départementale", players: 10, trainings: [{day:"Lundi", time:"20h-22h", location:"Gymnase Alice Milliat"}, {day:"Mercredi", time:"20h-22h", location:"Gymnase Alice Milliat"}], emoji: "🏐", image: null },
+  { id: "sf1", name: "Séniors Féminines 1", category: "Séniors", level: "Régionale", players: 11, trainings: [{day:"Mardi", time:"18h-20h", location:"Gymnase Alice Milliat"}, {day:"Jeudi", time:"18h-20h", location:"Gymnase Alice Milliat"}], emoji: "🏐", image: null },
+  { id: "m18f", name: "M18 Féminines", category: "Jeunes", level: "Départementale", players: 10, trainings: [{day:"Mercredi", time:"17h-19h", location:"Gymnase Alice Milliat"}, {day:"", time:"", location:""}], emoji: "🌟", image: null },
+  { id: "m15m", name: "M15 Masculins", category: "Jeunes", level: "Départementale", players: 12, trainings: [{day:"Mercredi", time:"14h-16h", location:"Gymnase Alice Milliat"}, {day:"", time:"", location:""}], emoji: "🌟", image: null },
+  { id: "m13f", name: "M13 Féminines", category: "Jeunes", level: "Départementale", players: 9, trainings: [{day:"Samedi", time:"10h-12h", location:"Gymnase Alice Milliat"}, {day:"", time:"", location:""}], emoji: "🌟", image: null },
+  { id: "loisirs", name: "Loisirs FSGT", category: "Loisirs", level: "FSGT", players: 15, trainings: [{day:"Vendredi", time:"20h-22h", location:"Gymnase Alice Milliat"}, {day:"", time:"", location:""}], emoji: "✨", image: null },
 ];
 
 let stats = [
@@ -1297,6 +1451,7 @@ let eventsFilter = "Tous";
 let editingMatchId = null;
 let editingEventId = null;
 let editingNewsId = null;
+let editingTeamId = null;
 
 // ─── Helpers ───
 function fmtDate(s) {
@@ -1313,6 +1468,71 @@ function showToast(msg) {
   t.classList.remove("hidden");
   setTimeout(() => t.classList.add("hidden"), 2500);
 }
+
+// ─── Detail Modal ───
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function openDetail(kind, id) {
+  const content = document.getElementById("detailModalContent");
+  let html = "";
+  if (kind === "match") {
+    const m = matches.find(x => x.id === id); if (!m) return;
+    const d = fmtDate(m.date);
+    html = `
+      <div class="detail-modal-body">
+        <div class="detail-modal-tag">Match · ${escapeHtml(d.full)}</div>
+        <div class="detail-modal-vs">
+          <span>${escapeHtml(m.team1)}</span>
+          <span class="match-vs-badge">VS</span>
+          <span>${escapeHtml(m.team2)}</span>
+        </div>
+        <div class="detail-modal-meta">
+          <span class="detail-modal-meta-item">🕒 ${escapeHtml(m.time)}</span>
+          <span class="detail-modal-meta-item">📍 ${escapeHtml(m.location)}, ${escapeHtml(m.city)}</span>
+        </div>
+      </div>`;
+  } else if (kind === "event") {
+    const e = events.find(x => x.id === id); if (!e) return;
+    const d = fmtDate(e.date);
+    html = `
+      ${e.image ? `<img src="${e.image}" alt="${escapeHtml(e.title)}" class="detail-modal-image">` : ""}
+      <div class="detail-modal-body">
+        <div class="detail-modal-tag">${escapeHtml(e.type)}</div>
+        <div class="detail-modal-title">${escapeHtml(e.title)}</div>
+        <div class="detail-modal-meta">
+          <span class="detail-modal-meta-item">📅 ${escapeHtml(d.full)}</span>
+          <span class="detail-modal-meta-item">🕒 ${escapeHtml(e.time)}</span>
+          ${e.location ? `<span class="detail-modal-meta-item">📍 ${escapeHtml(e.location)}</span>` : ""}
+        </div>
+        <div class="detail-modal-text">${escapeHtml(e.desc || "")}</div>
+      </div>`;
+  } else if (kind === "news") {
+    const n = news.find(x => x.id === id); if (!n) return;
+    html = `
+      ${n.image ? `<img src="${n.image}" alt="${escapeHtml(n.title)}" class="detail-modal-image">` : ""}
+      <div class="detail-modal-body">
+        <div class="detail-modal-tag">${escapeHtml(n.tag)}</div>
+        <div class="detail-modal-title">${escapeHtml(n.title)}</div>
+        <div class="detail-modal-meta">
+          <span class="detail-modal-meta-item">📅 ${escapeHtml(fmtLong(n.date))}</span>
+        </div>
+        <div class="detail-modal-text">${escapeHtml(n.body)}</div>
+      </div>`;
+  }
+  content.innerHTML = html;
+  document.getElementById("detailModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+function closeDetail() {
+  document.getElementById("detailModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (!document.getElementById("detailModal").classList.contains("hidden")) closeDetail();
+  }
+});
 
 // ─── Image upload helpers ───
 function previewImage(event, previewId) {
@@ -1403,7 +1623,7 @@ function exitAdmin() {
 // ─── Render functions ───
 function renderMatchCard(m, i) {
   const d = fmtDate(m.date);
-  return `<div class="card match-card fade-up stagger-${Math.min(i+1,7)}">
+  return `<div class="card match-card card-clickable fade-up stagger-${Math.min(i+1,7)}" onclick="openDetail('match', ${m.id})">
     <div class="match-date-block">
       <div class="match-date-day">${d.day}</div>
       <div class="match-date-month">${d.month}</div>
@@ -1423,7 +1643,7 @@ function renderMatchCard(m, i) {
 }
 
 function renderNewsCard(n, i) {
-  return `<div class="card news-card fade-up stagger-${Math.min(i+2,7)}" style="${n.image ? 'padding-top:0;overflow:hidden' : ''}">
+  return `<div class="card news-card card-clickable fade-up stagger-${Math.min(i+2,7)}" onclick="openDetail('news', ${n.id})" style="${n.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${n.image ? `<img src="${n.image}" alt="${n.title}" class="card-image">` : ""}
     <div class="news-tag">${n.tag}</div>
     <div class="news-card-title">${n.title}</div>
@@ -1434,6 +1654,14 @@ function renderNewsCard(n, i) {
 
 function renderTeamCard(t, i) {
   const lc = t.level === "Régionale" ? "regionale" : t.level === "FSGT" ? "fsgt" : "departementale";
+  const trainings = (t.trainings || []).filter(tr => tr && (tr.day || tr.time || tr.location));
+  const trainingsHtml = trainings.length
+    ? `<div class="team-trainings">${trainings.map(tr => `
+        <div class="team-training-line">
+          <div class="team-training-line-when">${[tr.day, tr.time].filter(Boolean).join(" · ") || "Horaire à définir"}</div>
+          ${tr.location ? `<div class="team-training-line-where">📍 ${tr.location}</div>` : ""}
+        </div>`).join("")}</div>`
+    : `<div class="team-training-line-where">Entraînements à définir</div>`;
   return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${t.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${t.image ? `<img src="${t.image}" alt="${t.name}" class="card-image">` : ""}
     <div class="team-card-header">
@@ -1444,7 +1672,10 @@ function renderTeamCard(t, i) {
     <div class="team-category">${t.category}</div>
     <div class="team-details">
       <div class="team-detail"><span class="team-detail-label">Joueurs</span><span class="team-detail-value">${t.players}</span></div>
-      <div class="team-detail"><span class="team-detail-label">Entraînements</span><span class="team-detail-value">${t.training}</span></div>
+    </div>
+    <div style="margin-top:12px">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em">Entraînements</div>
+      ${trainingsHtml}
     </div>
   </div>`;
 }
@@ -1452,7 +1683,7 @@ function renderTeamCard(t, i) {
 function renderEventCard(e, i) {
   const d = fmtDate(e.date);
   const typeKey = e.type === "Réunion" ? "reunion" : e.type === "Entraînement" ? "entrainement" : e.type === "Tournoi" ? "tournoi" : "autre";
-  return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${e.image ? 'padding-top:0;overflow:hidden' : ''}">
+  return `<div class="card card-clickable fade-up stagger-${Math.min(i+2,7)}" onclick="openDetail('event', ${e.id})" style="${e.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${e.image ? `<img src="${e.image}" alt="${e.title}" class="card-image">` : ""}
     <div class="event-card-top">
       <div class="event-date-badge">
@@ -1593,7 +1824,7 @@ function renderPage() {
   renderAdminEventList();
   renderAdminNewsList();
   renderVisibilityToggles();
-  renderAdminTeamImages();
+  renderAdminTeamList();
 
   // Apply visibility last
   applySectionVisibility();
@@ -1704,58 +1935,113 @@ function renderAdminList() {
     }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucun match programmé</p></div>');
 }
 
-// ─── Team Images Admin ───
-function renderAdminTeamImages() {
-  const c = document.getElementById("adminTeamImages");
-  if (!c) return;
-  c.innerHTML = teams.map(t => `
-    <div class="team-image-row">
-      <div class="team-image-thumb">
-        ${t.image ? `<img src="${t.image}" alt="${t.name}">` : t.emoji}
-      </div>
-      <div class="team-image-info">
-        <div class="team-image-name">${t.name}</div>
-        <div class="team-image-meta">${t.category} · ${t.level}</div>
-      </div>
-      <div class="team-image-actions">
-        <label class="btn btn-secondary btn-sm">
-          <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-          ${t.image ? "Changer" : "Uploader"}
-          <input type="file" accept="image/*" style="display:none" onchange="uploadTeamImage('${t.id}', event)">
-        </label>
-        ${t.image ? `<button class="btn btn-danger btn-sm" onclick="removeTeamImage('${t.id}')">
-          <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-        </button>` : ""}
-      </div>
-    </div>
-  `).join("");
-}
-function uploadTeamImage(teamId, event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showToast("Image trop volumineuse (max 5 Mo)");
-    event.target.value = "";
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    const team = teams.find(t => t.id === teamId);
-    if (team) {
-      team.image = ev.target.result;
-      showToast("Image de l'équipe mise à jour");
-      renderPage();
+// ─── Teams Admin (CRUD) ───
+function submitTeam() {
+  const name = document.getElementById("teamName").value.trim();
+  const category = document.getElementById("teamCategory").value;
+  const level = document.getElementById("teamLevel").value;
+  const playersRaw = document.getElementById("teamPlayers").value.trim();
+  const emoji = document.getElementById("teamEmoji").value.trim() || (category === "Loisirs" ? "✨" : category === "Jeunes" ? "🌟" : "🏐");
+  if (!name) { showToast("Nom d'équipe requis"); return; }
+  const players = playersRaw === "" ? 0 : parseInt(playersRaw, 10) || 0;
+  const trainings = [
+    { day: document.getElementById("teamTrain1Day").value.trim(), time: document.getElementById("teamTrain1Time").value.trim(), location: document.getElementById("teamTrain1Loc").value.trim() },
+    { day: document.getElementById("teamTrain2Day").value.trim(), time: document.getElementById("teamTrain2Time").value.trim(), location: document.getElementById("teamTrain2Loc").value.trim() },
+  ];
+  const preview = document.getElementById("teamImagePreview");
+  const image = preview.style.display !== "none" ? preview.src : null;
+  if (editingTeamId !== null) {
+    const t = teams.find(x => x.id === editingTeamId);
+    if (t) {
+      t.name = name; t.category = category; t.level = level;
+      t.players = players; t.emoji = emoji; t.trainings = trainings;
+      if (image !== null || document.getElementById("teamImage").value !== "") t.image = image;
+      else t.image = image;
     }
-  };
-  reader.readAsDataURL(file);
-}
-function removeTeamImage(teamId) {
-  const team = teams.find(t => t.id === teamId);
-  if (team) {
-    team.image = null;
-    showToast("Image supprimée");
-    renderPage();
+    showToast("Équipe modifiée");
+    cancelEditTeam();
+  } else {
+    const id = "team_" + Date.now();
+    teams.push({ id, name, category, level, players, emoji, trainings, image });
+    resetTeamForm();
+    showToast("Équipe ajoutée");
   }
+  renderPage();
+}
+function editTeam(id) {
+  const t = teams.find(x => x.id === id); if (!t) return;
+  editingTeamId = id;
+  document.getElementById("teamName").value = t.name;
+  document.getElementById("teamCategory").value = t.category;
+  document.getElementById("teamLevel").value = t.level;
+  document.getElementById("teamPlayers").value = t.players;
+  document.getElementById("teamEmoji").value = t.emoji || "";
+  const tr = t.trainings || [];
+  document.getElementById("teamTrain1Day").value = tr[0]?.day || "";
+  document.getElementById("teamTrain1Time").value = tr[0]?.time || "";
+  document.getElementById("teamTrain1Loc").value = tr[0]?.location || "";
+  document.getElementById("teamTrain2Day").value = tr[1]?.day || "";
+  document.getElementById("teamTrain2Time").value = tr[1]?.time || "";
+  document.getElementById("teamTrain2Loc").value = tr[1]?.location || "";
+  const preview = document.getElementById("teamImagePreview");
+  if (t.image) {
+    preview.src = t.image;
+    preview.style.display = "block";
+    document.getElementById("teamImageRemoveBtn").style.display = "inline-flex";
+  } else {
+    preview.style.display = "none";
+    preview.src = "";
+    document.getElementById("teamImageRemoveBtn").style.display = "none";
+  }
+  document.getElementById("teamSubmitLabel").textContent = "Enregistrer les modifications";
+  document.getElementById("teamCancelBtn").style.display = "inline-flex";
+  document.getElementById("teamName").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function cancelEditTeam() {
+  editingTeamId = null;
+  resetTeamForm();
+  document.getElementById("teamSubmitLabel").textContent = "Ajouter l'équipe";
+  document.getElementById("teamCancelBtn").style.display = "none";
+}
+function resetTeamForm() {
+  ["teamName","teamPlayers","teamEmoji","teamTrain1Day","teamTrain1Time","teamTrain1Loc","teamTrain2Day","teamTrain2Time","teamTrain2Loc"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+  document.getElementById("teamCategory").value = "Séniors";
+  document.getElementById("teamLevel").value = "Régionale";
+  removeImage("teamImage", "teamImagePreview");
+}
+function deleteTeam(id) {
+  if (!confirm("Supprimer cette équipe ?")) return;
+  teams = teams.filter(t => t.id !== id);
+  if (editingTeamId === id) cancelEditTeam();
+  showToast("Équipe supprimée");
+  renderPage();
+}
+function renderAdminTeamList() {
+  const c = document.getElementById("adminTeamList");
+  if (!c) return;
+  c.innerHTML = `<div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">Équipes (${teams.length})</div>` +
+    (teams.length ? teams.map(t => {
+      const trCount = (t.trainings || []).filter(x => x && (x.day || x.time || x.location)).length;
+      return `<div class="admin-match-row">
+        <div style="flex:1;min-width:0;display:flex;align-items:center;gap:10px">
+          <div style="width:40px;height:40px;border-radius:var(--radius-xs);background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+            ${t.image ? `<img src="${t.image}" alt="" style="width:100%;height:100%;object-fit:cover">` : `<span style="font-size:20px">${t.emoji || "🏐"}</span>`}
+          </div>
+          <div style="min-width:0">
+            <div class="admin-match-teams">${t.name}</div>
+            <div class="admin-match-detail">${t.category} · ${t.level} · ${t.players} joueurs · ${trCount} entraînement(s)</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="editTeam('${t.id}')" title="Modifier">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTeam('${t.id}')" title="Supprimer">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucune équipe</p></div>');
 }
 
 // ─── Stats Admin ───
