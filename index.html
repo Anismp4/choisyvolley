@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>CRVB — Choisy-le-Roi Volley Ball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CRVB — Design System
+   ═══════════════════════════════════════════ */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: #151c2e;
+  --bg-card-hover: #1a2338;
+  --bg-elevated: #1e2a45;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59,130,246,0.25);
+  --accent-soft: rgba(59,130,246,0.08);
+  --gold: #f59e0b;
+  --gold-glow: rgba(245,158,11,0.2);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(148,163,184,0.08);
+  --border-hover: rgba(148,163,184,0.15);
+  --success: #10b981;
+  --danger: #ef4444;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-elevated: 0 8px 40px rgba(0,0,0,0.4);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+/* ═══ Animations ═══ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px rgba(59,130,246,0.1); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+.stagger-1 { animation-delay: 0.06s; }
+.stagger-2 { animation-delay: 0.12s; }
+.stagger-3 { animation-delay: 0.18s; }
+.stagger-4 { animation-delay: 0.24s; }
+.stagger-5 { animation-delay: 0.30s; }
+.stagger-6 { animation-delay: 0.36s; }
+.stagger-7 { animation-delay: 0.42s; }
+
+.page-enter { animation: fadeIn 0.35s ease-out; }
+
+/* ═══ Grain overlay ═══ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ═══ Layout ═══ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.main { padding-top: 64px; min-height: 100vh; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══ Navigation ═══ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background: rgba(10,14,26,0.82);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; text-decoration: none; color: var(--text-primary);
+}
+.nav-brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.nav-brand-sub {
+  font-size: 11px; color: var(--text-muted); font-weight: 400;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-link {
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition);
+  border: none; background: none; display: flex;
+  align-items: center; gap: 7px; position: relative;
+  white-space: nowrap; font-family: var(--font-sans);
+}
+.nav-link:hover { color: var(--text-primary); background: var(--accent-soft); }
+.nav-link.active { color: var(--accent); background: var(--accent-soft); }
+.nav-link.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 50%;
+  transform: translateX(-50%); width: 20px; height: 2px;
+  background: var(--accent); border-radius: 1px;
+}
+.nav-admin {
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; color: var(--gold);
+  cursor: pointer; transition: var(--transition);
+  border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(245,158,11,0.06);
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans);
+}
+.nav-admin:hover { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.35); }
+
+.nav-mobile-toggle {
+  display: none; background: none; border: none;
+  color: var(--text-primary); cursor: pointer; padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: rgba(10,14,26,0.96);
+    backdrop-filter: blur(24px); padding: 12px;
+    border-bottom: 1px solid var(--border); gap: 2px;
+  }
+  .nav-mobile-toggle { display: block; }
+  .nav-link.active::after { display: none; }
+  .nav-admin-group { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+  .nav-admin { flex: 1; justify-content: center; }
+  .nav-inner { padding: 0 16px; }
+  .container { padding: 0 16px; }
+}
+@media (max-width: 480px) {
+  .nav-brand-sub { display: none; }
+  .section { padding: 40px 0; }
+  .section-title { font-size: 26px; }
+  .hero { padding: 60px 0 40px; }
+  .hero-subtitle { font-size: 16px; }
+  .hero-actions .btn { flex: 1; justify-content: center; }
+  .btn { padding: 10px 18px; font-size: 13px; }
+}
+
+/* ═══ SVG Icons ═══ */
+.icon { display: inline-flex; vertical-align: middle; flex-shrink: 0; }
+
+/* ═══ Buttons ═══ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: var(--transition); border: none;
+  letter-spacing: -0.01em; white-space: nowrap;
+  font-family: var(--font-sans);
+}
+.btn-primary {
+  background: var(--accent); color: white;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+.btn-primary:hover {
+  background: #2563eb;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  transform: translateY(-1px);
+}
+.btn-primary:disabled { opacity: 0.45; pointer-events: none; }
+.btn-secondary {
+  background: var(--bg-card); color: var(--text-primary);
+  border: 1px solid var(--border-hover);
+}
+.btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--text-muted); }
+.btn-danger {
+  background: rgba(239,68,68,0.1); color: var(--danger);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.btn-danger:hover { background: rgba(239,68,68,0.18); }
+.btn-sm { padding: 8px 16px; font-size: 13px; }
+.btn-ghost {
+  background: none; color: var(--text-secondary);
+  border: none; padding: 8px 12px;
+}
+.btn-ghost:hover { color: var(--text-primary); background: var(--accent-soft); }
+
+/* ═══ Hero ═══ */
+.hero {
+  position: relative; padding: 100px 0 80px; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 80% 20%, rgba(245,158,11,0.06) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black 20%, transparent 70%);
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black 20%, transparent 70%);
+}
+.hero-content {
+  position: relative; text-align: center; max-width: 720px; margin: 0 auto;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; background: var(--accent-soft);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-radius: 100px; font-size: 13px; font-weight: 500;
+  color: var(--accent); margin-bottom: 28px; letter-spacing: 0.02em;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; background: var(--accent);
+  border-radius: 50%; animation: pulseGlow 2s ease-in-out infinite;
+}
+.hero-title {
+  font-size: clamp(38px, 6vw, 64px); font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-title span { -webkit-text-fill-color: var(--accent); }
+.hero-subtitle {
+  font-size: 18px; color: var(--text-secondary); line-height: 1.7;
+  max-width: 520px; margin: 0 auto 40px; font-weight: 400;
+}
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-volleyball {
+  position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+  opacity: 0.04; animation: float 6s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 70px 0 50px; }
+  .hero-volleyball { display: none; }
+}
+
+/* ═══ Sections ═══ */
+.section { padding: 60px 0; }
+.section-header { margin-bottom: 40px; }
+.section-label {
+  font-family: var(--font-mono); font-size: 12px; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-bottom: 10px; font-weight: 700;
+}
+.section-title {
+  font-size: 32px; font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.15;
+}
+.section-subtitle {
+  font-size: 15px; color: var(--text-secondary);
+  margin-top: 8px; max-width: 500px;
+}
+
+/* ═══ Cards ═══ */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  transition: var(--transition); position: relative; overflow: hidden;
+}
+.card:hover {
+  border-color: var(--border-hover); background: var(--bg-card-hover);
+  transform: translateY(-2px); box-shadow: var(--shadow-card);
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  opacity: 0; transition: var(--transition);
+}
+.card:hover::before { opacity: 1; }
+
+/* ═══ Stats ═══ */
+.stats-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-top: 50px;
+}
+.stat-item { background: var(--bg-card); padding: 28px 24px; text-align: center; }
+.stat-value {
+  font-size: 32px; font-weight: 700; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+@media (max-width: 768px) {
+  .stats-strip { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══ Match Cards ═══ */
+.matches-strip { display: grid; gap: 10px; }
+.match-card {
+  display: flex; align-items: center; gap: 20px; padding: 20px 24px;
+}
+.match-date-block {
+  min-width: 56px; text-align: center; padding: 10px 8px;
+  background: var(--accent-soft); border-radius: var(--radius-sm);
+  border: 1px solid rgba(59,130,246,0.1);
+}
+.match-date-day { font-size: 24px; font-weight: 700; color: var(--accent); line-height: 1; }
+.match-date-month {
+  font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+  font-weight: 600; letter-spacing: 0.06em; margin-top: 2px;
+}
+.match-teams { flex: 1; min-width: 0; }
+.match-vs { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; flex-wrap: wrap; }
+.match-vs-badge {
+  font-size: 10px; font-weight: 700; color: var(--text-muted);
+  padding: 2px 8px; background: rgba(100,116,139,0.12);
+  border-radius: 4px; letter-spacing: 0.1em;
+}
+.match-meta { display: flex; gap: 16px; margin-top: 6px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
+.match-meta-item { display: flex; align-items: center; gap: 5px; }
+
+/* ═══ News ═══ */
+.news-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+}
+.news-tag {
+  display: inline-block; padding: 3px 10px; background: var(--accent-soft);
+  color: var(--accent); border-radius: 100px; font-size: 12px;
+  font-weight: 600; letter-spacing: 0.02em; margin-bottom: 12px;
+}
+.news-card-title {
+  font-size: 17px; font-weight: 600; margin-bottom: 8px;
+  letter-spacing: -0.01em; line-height: 1.35;
+}
+.news-card-body {
+  font-size: 14px; color: var(--text-secondary); line-height: 1.65;
+  display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.news-card-date {
+  font-size: 12px; color: var(--text-muted); margin-top: 14px; font-family: var(--font-mono);
+}
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+
+@media (max-width: 768px) {
+  .news-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Teams ═══ */
+.teams-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+}
+.team-card-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+}
+.team-emoji {
+  font-size: 28px; width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); border-radius: var(--radius-sm);
+}
+.team-level-badge {
+  padding: 4px 10px; border-radius: 100px; font-size: 11px;
+  font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.team-level-regionale { background: rgba(245,158,11,0.1); color: var(--gold); border: 1px solid rgba(245,158,11,0.2); }
+.team-level-departementale { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(59,130,246,0.15); }
+.team-level-fsgt { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.team-name { font-size: 17px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em; }
+.team-category { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+.team-details { display: flex; flex-direction: column; gap: 8px; }
+.team-detail {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border);
+}
+.team-detail:last-child { border-bottom: none; }
+.team-detail-label { color: var(--text-muted); }
+.team-detail-value { color: var(--text-primary); font-weight: 500; }
+
+@media (max-width: 768px) {
+  .teams-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Contact ═══ */
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;
+}
+.contact-info-list { display: flex; flex-direction: column; gap: 16px; }
+.contact-info-item { display: flex; gap: 14px; align-items: flex-start; }
+.contact-info-icon {
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); border-radius: var(--radius-sm);
+  color: var(--accent); flex-shrink: 0;
+}
+.contact-info-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.contact-info-text p { font-size: 14px; color: var(--text-secondary); }
+.contact-form { display: flex; flex-direction: column; gap: 14px; }
+.input-group { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.input, .textarea {
+  padding: 12px 16px; background: var(--bg-secondary);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text-primary); font-size: 14px; font-family: var(--font-sans);
+  transition: var(--transition); outline: none; width: 100%;
+}
+.input:focus, .textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.textarea { resize: vertical; min-height: 120px; }
+.contact-success {
+  text-align: center; padding: 32px 0;
+}
+.contact-success-icon { font-size: 40px; margin-bottom: 12px; }
+
+@media (max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Admin ═══ */
+.admin-panel {
+  background: var(--bg-card); border: 1px solid rgba(245,158,11,0.15);
+  border-radius: var(--radius); overflow: hidden;
+}
+.admin-header {
+  padding: 20px 24px; background: rgba(245,158,11,0.04);
+  border-bottom: 1px solid rgba(245,158,11,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.admin-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 600; color: var(--gold);
+}
+.admin-body { padding: 24px; }
+.admin-form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.admin-form-full { grid-column: 1 / -1; }
+.admin-match-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
+}
+.admin-match-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--bg-secondary);
+  border-radius: var(--radius-sm); font-size: 14px; gap: 12px; flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .admin-match-row { padding: 10px 12px; }
+  .admin-match-row .btn-sm { padding: 6px 10px; }
+}
+.admin-match-teams { font-weight: 500; }
+.admin-match-detail { color: var(--text-muted); font-size: 12px; font-family: var(--font-mono); white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .admin-form-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Section row flex ═══ */
+.section-row {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px;
+}
+
+/* ═══ Login Modal ═══ */
+.login-modal {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+.login-modal.hidden { display: none; }
+.login-modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.login-modal-card {
+  position: relative; z-index: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-elevated);
+  width: 90%; max-width: 420px;
+  padding: 32px;
+  animation: fadeUp 0.3s ease-out;
+}
+.login-modal-header {
+  text-align: center; margin-bottom: 24px;
+}
+.login-modal-icon {
+  width: 56px; height: 56px; margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 50%; color: var(--gold);
+}
+.login-modal-title {
+  font-size: 20px; font-weight: 700; margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.login-modal-subtitle {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.5;
+}
+.login-modal-body { display: flex; flex-direction: column; gap: 14px; }
+.login-error {
+  font-size: 13px; color: var(--danger);
+  padding: 8px 12px; background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: var(--radius-xs);
+}
+.login-error.hidden { display: none; }
+
+/* ═══ Admin Toggle Switch ═══ */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: var(--bg-secondary);
+  border-radius: var(--radius-sm); margin-bottom: 8px;
+}
+.toggle-row-label {
+  font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+}
+.toggle-row-desc {
+  font-size: 12px; color: var(--text-muted); margin-top: 2px;
+}
+.toggle-switch {
+  position: relative; width: 44px; height: 24px; flex-shrink: 0;
+  background: var(--bg-elevated); border-radius: 100px; cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--border-hover);
+}
+.toggle-switch::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px; background: var(--text-muted);
+  border-radius: 50%; transition: var(--transition);
+}
+.toggle-switch.on { background: var(--accent); border-color: var(--accent); }
+.toggle-switch.on::after {
+  left: 22px; background: white;
+}
+
+/* ═══ Image Upload ═══ */
+.image-upload-box {
+  border: 2px dashed var(--border-hover);
+  border-radius: var(--radius-sm);
+  padding: 20px; text-align: center;
+  cursor: pointer; transition: var(--transition);
+  background: var(--bg-secondary);
+}
+.image-upload-box:hover {
+  border-color: var(--accent); background: var(--accent-soft);
+}
+.image-upload-box input[type="file"] { display: none; }
+.image-upload-preview {
+  max-width: 100%; max-height: 180px;
+  border-radius: var(--radius-sm);
+  margin-top: 10px; display: block;
+  margin-left: auto; margin-right: auto;
+}
+.image-upload-hint {
+  font-size: 13px; color: var(--text-secondary);
+}
+.image-upload-hint strong { color: var(--accent); }
+
+/* Event & Team card image */
+.card-image {
+  width: calc(100% + 48px); margin: -24px -24px 16px;
+  height: 160px; object-fit: cover;
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: block;
+}
+
+/* Admin team images grid */
+.team-image-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px; background: var(--bg-secondary);
+  border-radius: var(--radius-sm); margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.team-image-thumb {
+  width: 60px; height: 60px; border-radius: var(--radius-sm);
+  background: var(--bg-elevated); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.team-image-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.team-image-info { flex: 1; min-width: 140px; }
+.team-image-name { font-size: 14px; font-weight: 600; }
+.team-image-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.team-image-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.team-image-actions label.btn { cursor: pointer; }
+
+/* ═══ Toast ═══ */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  padding: 14px 20px; background: var(--bg-elevated);
+  border: 1px solid rgba(16,185,129,0.3); border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500; box-shadow: var(--shadow-elevated);
+  display: flex; align-items: center; gap: 10px;
+  animation: fadeUp 0.3s ease-out; color: var(--success);
+  pointer-events: none;
+}
+.toast.hidden { display: none; }
+
+/* ═══ Empty state ═══ */
+.empty-state { text-align: center; padding: 50px 24px; color: var(--text-muted); }
+
+/* ═══ Events ═══ */
+.events-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+}
+.event-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px;
+}
+.event-date-badge {
+  display: flex; flex-direction: column; align-items: center; min-width: 52px;
+  background: var(--accent-soft); border: 1px solid rgba(59,130,246,0.12);
+  border-radius: var(--radius-sm); padding: 8px 6px; text-align: center;
+}
+.event-date-day { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1; }
+.event-date-month { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.06em; margin-top: 2px; }
+.event-type-badge {
+  padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.event-type-tournoi { background: rgba(245,158,11,0.1); color: var(--gold); border: 1px solid rgba(245,158,11,0.2); }
+.event-type-reunion { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(59,130,246,0.15); }
+.event-type-entrainement { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.event-type-autre { background: rgba(148,163,184,0.1); color: var(--text-secondary); border: 1px solid var(--border-hover); }
+.event-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; line-height: 1.3; }
+.event-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
+.event-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-muted); }
+.event-meta-item { display: flex; align-items: center; gap: 4px; }
+
+@media (max-width: 768px) {
+  .events-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ Footer ═══ */
+.footer {
+  border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px;
+}
+.footer-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-text { font-size: 13px; color: var(--text-muted); }
+.footer-links { display: flex; gap: 20px; }
+.footer-link {
+  font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  transition: var(--transition); background: none; border: none;
+  font-family: var(--font-sans);
+}
+.footer-link:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAVIGATION ═══════ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand" onclick="navigate('home')">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4">
+        <circle cx="50" cy="50" r="46"/>
+        <path d="M50 4C50 4,30 30,50 50C70 70,50 96,50 96" stroke-width="3"/>
+        <path d="M8 30C8 30,40 35,50 50C60 65,92 70,92 70" stroke-width="3"/>
+        <path d="M8 70C8 70,35 55,50 50C65 45,92 30,92 30" stroke-width="3"/>
+      </svg>
+      <div>
+        <div class="nav-brand-text">CRVB</div>
+        <div class="nav-brand-sub">Choisy-le-Roi Volley</div>
+      </div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link active" data-page="home" onclick="navigate('home')">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+        Accueil
+      </button>
+      <button class="nav-link" data-page="news" onclick="navigate('news')">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Actualités
+      </button>
+      <button class="nav-link" data-page="teams" onclick="navigate('teams')">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Équipes
+      </button>
+      <button class="nav-link" data-page="events" onclick="navigate('events')">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Événements
+      </button>
+      <button class="nav-link" data-page="contact" onclick="navigate('contact')">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Contact
+      </button>
+      <div class="nav-admin-group" id="adminGroup" style="display:flex;gap:6px;align-items:center">
+        <button class="nav-admin" id="adminToggle" onclick="toggleAdmin()">
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          Admin
+        </button>
+        <button class="nav-admin" id="adminExit" onclick="exitAdmin()" style="display:none;color:var(--danger);border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.06)">
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+          Quitter
+        </button>
+      </div>
+    </div>
+    <button class="nav-mobile-toggle" onclick="toggleMobileNav()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════ MAIN CONTENT ═══════ -->
+<main class="main">
+
+  <!-- ══ HOME PAGE ══ -->
+  <div class="page active" id="page-home">
+    <section class="hero" id="home-hero-section">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge fade-up">
+            <span class="hero-badge-dot"></span>
+            Saison 2025 — 2026
+          </div>
+          <h1 class="hero-title fade-up stagger-1">Choisy-le-Roi<br><span>Volley Ball</span></h1>
+          <p class="hero-subtitle fade-up stagger-2">Club amateur de volleyball à Choisy-le-Roi. Passion, cohésion et esprit sportif depuis nos débuts.</p>
+          <div class="hero-actions fade-up stagger-3">
+            <button class="btn btn-primary" onclick="navigate('teams')">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Nos équipes
+            </button>
+            <button class="btn btn-secondary" onclick="navigate('contact')">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Nous contacter
+            </button>
+          </div>
+        </div>
+        <div class="hero-volleyball">
+          <svg width="300" height="300" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4">
+            <circle cx="50" cy="50" r="46"/><path d="M50 4C50 4,30 30,50 50C70 70,50 96,50 96" stroke-width="3"/>
+            <path d="M8 30C8 30,40 35,50 50C60 65,92 70,92 70" stroke-width="3"/><path d="M8 70C8 70,35 55,50 50C65 45,92 30,92 30" stroke-width="3"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="container">
+      <div class="stats-strip fade-up stagger-4" id="statsStrip"></div>
+    </div>
+
+    <!-- Upcoming matches -->
+    <section class="section" id="home-matches-section">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label">Calendrier</div>
+          <div class="section-title">Prochains matchs</div>
+          <div class="section-subtitle">Retrouvez les rencontres à venir du CRVB</div>
+        </div>
+        <div class="matches-strip" id="homeMatches"></div>
+      </div>
+    </section>
+
+    <!-- Upcoming events -->
+    <section class="section" style="padding-top:0" id="home-events-section">
+      <div class="container">
+        <div class="section-row">
+          <div>
+            <div class="section-label">Agenda</div>
+            <div class="section-title">Prochains événements</div>
+          </div>
+          <button class="btn btn-ghost" onclick="navigate('events')">
+            Tout voir
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="events-grid" id="homeEvents"></div>
+      </div>
+    </section>
+
+    <!-- Latest news -->
+    <section class="section" style="padding-top:0" id="home-news-section">
+      <div class="container">
+        <div class="section-row">
+          <div>
+            <div class="section-label">Actualités</div>
+            <div class="section-title">Dernières nouvelles</div>
+          </div>
+          <button class="btn btn-ghost" onclick="navigate('news')">
+            Tout voir
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="news-grid" id="homeNews"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ NEWS PAGE ══ -->
+  <div class="page" id="page-news">
+    <section class="section" style="padding-top:80px">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label">Actualités</div>
+          <div class="section-title">Toute l'actu du CRVB</div>
+          <div class="section-subtitle">Résultats, événements et vie du club</div>
+        </div>
+        <div class="filter-bar fade-up stagger-1" id="newsFilters"></div>
+        <div class="news-grid" id="newsGrid"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ TEAMS PAGE ══ -->
+  <div class="page" id="page-teams">
+    <section class="section" style="padding-top:80px">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label">Équipes</div>
+          <div class="section-title">Nos formations</div>
+          <div class="section-subtitle">Séniors, jeunes et loisirs — trouvez votre équipe</div>
+        </div>
+        <div class="filter-bar fade-up stagger-1" id="teamsFilters"></div>
+        <div class="teams-grid" id="teamsGrid"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ EVENTS PAGE ══ -->
+  <div class="page" id="page-events">
+    <section class="section" style="padding-top:80px">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label">Agenda</div>
+          <div class="section-title">Événements du club</div>
+          <div class="section-subtitle">Tournois, réunions et activités à venir</div>
+        </div>
+        <div class="filter-bar fade-up stagger-1" id="eventsFilters"></div>
+        <div class="events-grid" id="eventsGrid"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ CONTACT PAGE ══ -->
+  <div class="page" id="page-contact">
+    <section class="section" style="padding-top:80px">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label">Contact</div>
+          <div class="section-title">Nous rejoindre</div>
+          <div class="section-subtitle">Une question ? Envie de nous rejoindre ? Contactez-nous</div>
+        </div>
+        <div class="contact-grid fade-up stagger-1">
+          <div class="contact-info-list">
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+              <div class="contact-info-text"><h4>Email</h4><p>choisyvolley@gmail.com</p></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
+              <div class="contact-info-text"><h4>Téléphone</h4><p>06 27 15 54 05</p></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg></div>
+              <div class="contact-info-text"><h4>Gymnase</h4><p>Gymnase Alice Milliat, Choisy-le-Roi</p></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg></div>
+              <div class="contact-info-text"><h4>Boutique</h4><p>market-factory.fr/crvb-boutique</p></div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg></div>
+              <div class="contact-info-text"><h4>Instagram</h4><p>@choisyvolley</p></div>
+            </div>
+          </div>
+          <div class="card" style="padding:28px" id="contactFormCard">
+            <div class="contact-form" id="contactForm">
+              <div class="input-group">
+                <label class="input-label">Nom complet</label>
+                <input class="input" placeholder="Votre nom" id="contactName">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Email</label>
+                <input class="input" type="email" placeholder="votre@email.com" id="contactEmail">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Sujet</label>
+                <input class="input" placeholder="Inscription, renseignements..." id="contactSubject">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Message</label>
+                <textarea class="textarea" placeholder="Votre message..." id="contactMessage"></textarea>
+              </div>
+              <button class="btn btn-primary" style="align-self:flex-start;margin-top:4px" onclick="sendContact()">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                Envoyer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ ADMIN PAGE ══ -->
+  <div class="page" id="page-admin">
+    <section class="section" style="padding-top:80px">
+      <div class="container">
+        <div class="section-header fade-up">
+          <div class="section-label" style="color:var(--gold)">Administration</div>
+          <div class="section-title">Gestion du contenu</div>
+          <div class="section-subtitle">Ajouter, modifier ou supprimer les matchs et événements</div>
+        </div>
+
+        <!-- Admin visibilité des sections -->
+        <div class="admin-panel fade-up" style="margin-bottom:24px">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              Visibilité des sections (accueil)
+            </div>
+          </div>
+          <div class="admin-body">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Activez ou désactivez les sections affichées sur la page d'accueil</div>
+            <div id="visibilityToggles"></div>
+          </div>
+        </div>
+
+        <!-- Admin statistiques -->
+        <div class="admin-panel fade-up stagger-1" style="margin-bottom:24px">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+              Bandeau statistiques (accueil)
+            </div>
+          </div>
+          <div class="admin-body">
+            <div class="admin-form-grid" id="statsAdminGrid"></div>
+            <div class="admin-form-full" style="display:flex;justify-content:flex-end;margin-top:14px">
+              <button class="btn btn-primary" onclick="saveStats()">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+                Enregistrer les statistiques
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin matchs -->
+        <div class="admin-panel fade-up stagger-1" style="margin-bottom:24px">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+              Nouveau match
+            </div>
+          </div>
+          <div class="admin-body">
+            <div class="admin-form-grid">
+              <div class="input-group">
+                <label class="input-label">Équipe domicile</label>
+                <input class="input" placeholder="Ex: CRVB SM1" id="adminTeam1">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Équipe extérieur</label>
+                <input class="input" placeholder="Ex: RC Champigny" id="adminTeam2">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Date</label>
+                <input class="input" type="date" id="adminDate">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Heure</label>
+                <input class="input" type="time" id="adminTime">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Lieu</label>
+                <input class="input" placeholder="Gymnase Alice Milliat" id="adminLocation" value="Gymnase Alice Milliat">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Ville</label>
+                <input class="input" placeholder="Choisy-le-Roi" id="adminCity" value="Choisy-le-Roi">
+              </div>
+              <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;flex-wrap:wrap">
+                <button class="btn btn-secondary" id="matchCancelBtn" onclick="cancelEditMatch()" style="display:none">Annuler</button>
+                <button class="btn btn-primary" id="matchSubmitBtn" onclick="submitMatch()">
+                  <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+                  <span id="matchSubmitLabel">Ajouter le match</span>
+                </button>
+              </div>
+            </div>
+            <div class="admin-match-list" id="adminMatchList"></div>
+          </div>
+        </div>
+
+        <!-- Admin événements -->
+        <div class="admin-panel fade-up stagger-2">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Nouvel événement
+            </div>
+          </div>
+          <div class="admin-body">
+            <div class="admin-form-grid">
+              <div class="input-group admin-form-full">
+                <label class="input-label">Titre de l'événement</label>
+                <input class="input" placeholder="Ex: Tournoi de printemps" id="evtTitle">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Type</label>
+                <select class="input" id="evtType">
+                  <option value="Tournoi">Tournoi</option>
+                  <option value="Réunion">Réunion</option>
+                  <option value="Entraînement">Entraînement</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Date</label>
+                <input class="input" type="date" id="evtDate">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Heure</label>
+                <input class="input" type="time" id="evtTime">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Lieu</label>
+                <input class="input" placeholder="Ex: Gymnase Alice Milliat" id="evtLocation">
+              </div>
+              <div class="input-group admin-form-full">
+                <label class="input-label">Description</label>
+                <textarea class="textarea" placeholder="Décrivez l'événement..." id="evtDesc" style="min-height:80px"></textarea>
+              </div>
+              <div class="input-group admin-form-full">
+                <label class="input-label">Image (optionnelle)</label>
+                <label class="image-upload-box" for="evtImage">
+                  <input type="file" id="evtImage" accept="image/*" onchange="previewImage(event, 'evtImagePreview')">
+                  <div class="image-upload-hint"><strong>Cliquez pour uploader</strong> ou glissez une image ici<br><span style="font-size:12px;color:var(--text-muted)">JPG, PNG, GIF — Max 5 Mo</span></div>
+                  <img id="evtImagePreview" class="image-upload-preview" style="display:none">
+                </label>
+                <button type="button" class="btn btn-ghost btn-sm" id="evtImageRemoveBtn" onclick="removeImage('evtImage','evtImagePreview')" style="display:none;align-self:flex-start;color:var(--danger)">Supprimer l'image</button>
+              </div>
+              <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;flex-wrap:wrap">
+                <button class="btn btn-secondary" id="evtCancelBtn" onclick="cancelEditEvent()" style="display:none">Annuler</button>
+                <button class="btn btn-primary" id="evtSubmitBtn" onclick="submitEvent()">
+                  <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+                  <span id="evtSubmitLabel">Ajouter l'événement</span>
+                </button>
+              </div>
+            </div>
+            <div class="admin-match-list" id="adminEventList"></div>
+          </div>
+        </div>
+
+        <!-- Admin actualités -->
+        <div class="admin-panel fade-up stagger-3" style="margin-top:24px">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+              Nouvelle actualité
+            </div>
+          </div>
+          <div class="admin-body">
+            <div class="admin-form-grid">
+              <div class="input-group admin-form-full">
+                <label class="input-label">Titre</label>
+                <input class="input" placeholder="Ex: Montée en régionale pour nos SF1 !" id="newsTitle">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Catégorie</label>
+                <select class="input" id="newsTag">
+                  <option value="Résultats">Résultats</option>
+                  <option value="Matchs">Matchs</option>
+                  <option value="Club">Club</option>
+                  <option value="Événements">Événements</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Date</label>
+                <input class="input" type="date" id="newsDate">
+              </div>
+              <div class="input-group admin-form-full">
+                <label class="input-label">Contenu</label>
+                <textarea class="textarea" placeholder="Contenu de l'actualité..." id="newsBody" style="min-height:100px"></textarea>
+              </div>
+              <div class="input-group admin-form-full">
+                <label class="input-label">Image (optionnelle)</label>
+                <label class="image-upload-box" for="newsImage">
+                  <input type="file" id="newsImage" accept="image/*" onchange="previewImage(event, 'newsImagePreview')">
+                  <div class="image-upload-hint"><strong>Cliquez pour uploader</strong> ou glissez une image ici<br><span style="font-size:12px;color:var(--text-muted)">JPG, PNG, GIF — Max 5 Mo</span></div>
+                  <img id="newsImagePreview" class="image-upload-preview" style="display:none">
+                </label>
+                <button type="button" class="btn btn-ghost btn-sm" id="newsImageRemoveBtn" onclick="removeImage('newsImage','newsImagePreview')" style="display:none;align-self:flex-start;color:var(--danger)">Supprimer l'image</button>
+              </div>
+              <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;flex-wrap:wrap">
+                <button class="btn btn-secondary" id="newsCancelBtn" onclick="cancelEditNews()" style="display:none">Annuler</button>
+                <button class="btn btn-primary" id="newsSubmitBtn" onclick="submitNews()">
+                  <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
+                  <span id="newsSubmitLabel">Ajouter l'actualité</span>
+                </button>
+              </div>
+            </div>
+            <div class="admin-match-list" id="adminNewsList"></div>
+          </div>
+        </div>
+
+        <!-- Admin images équipes -->
+        <div class="admin-panel fade-up" style="margin-top:24px">
+          <div class="admin-header">
+            <div class="admin-title">
+              <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Images des équipes
+            </div>
+          </div>
+          <div class="admin-body">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Ajoutez ou modifiez la photo de chaque équipe</div>
+            <div id="adminTeamImages"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4">
+          <circle cx="50" cy="50" r="46"/><path d="M50 4C50 4,30 30,50 50C70 70,50 96,50 96" stroke-width="3"/>
+          <path d="M8 30C8 30,40 35,50 50C60 65,92 70,92 70" stroke-width="3"/><path d="M8 70C8 70,35 55,50 50C65 45,92 30,92 30" stroke-width="3"/>
+        </svg>
+        <span class="footer-text">© 2026 Choisy-le-Roi Volley Ball — Tous droits réservés</span>
+      </div>
+      <div class="footer-links">
+        <button class="footer-link" onclick="navigate('contact')">Contact</button>
+        <a class="footer-link" href="https://www.instagram.com/choisyvolley/" target="_blank" style="text-decoration:none">Instagram</a>
+        <a class="footer-link" href="https://market-factory.fr/crvb-boutique" target="_blank" style="text-decoration:none">Boutique</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════ LOGIN MODAL ═══════ -->
+<div class="login-modal hidden" id="loginModal">
+  <div class="login-modal-overlay" onclick="closeLogin()"></div>
+  <div class="login-modal-card">
+    <div class="login-modal-header">
+      <div class="login-modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+      <div class="login-modal-title">Accès administrateur</div>
+      <div class="login-modal-subtitle">Veuillez entrer le mot de passe pour accéder au panneau d'administration</div>
+    </div>
+    <div class="login-modal-body">
+      <div class="input-group">
+        <label class="input-label">Mot de passe</label>
+        <input class="input" type="password" id="loginPassword" placeholder="Entrez le mot de passe" onkeypress="if(event.key==='Enter') submitLogin()">
+        <div class="login-error hidden" id="loginError">Mot de passe incorrect</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button class="btn btn-secondary" onclick="closeLogin()">Annuler</button>
+        <button class="btn btn-primary" onclick="submitLogin()">
+          <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+          Se connecter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TOAST ═══════ -->
+<div class="toast hidden" id="toast"></div>
+
+<!-- ═══════ JAVASCRIPT ═══════ -->
+<script>
+// ─── Data ───
+const MONTHS_FR = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Aoû","Sep","Oct","Nov","Déc"];
+const MONTHS_LONG = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+
+let matches = [
+  { id: 1, team1: "CRVB SM1", team2: "RC Champigny", date: "2026-04-19", time: "17:00", location: "Gymnase Alice Milliat", city: "Choisy-le-Roi" },
+  { id: 2, team1: "CRVB M15 Masculins", team2: "USF Volley Ball", date: "2026-04-11", time: "14:00", location: "Gymnase Alice Milliat", city: "Choisy-le-Roi" },
+  { id: 3, team1: "CRVB SM2", team2: "Eagle 4", date: "2026-04-26", time: "20:00", location: "Gymnase Alice Milliat", city: "Choisy-le-Roi" },
+];
+
+let news = [
+  { id: 1, title: "Montée en régionale pour nos SF1 !", body: "Félicitations à notre équipe SF1 qui termine la saison invaincue et monte en régionale ! Une saison exceptionnelle marquée par un esprit d'équipe sans faille.", date: "2026-04-10", tag: "Résultats" },
+  { id: 2, title: "Match du 11 Avril — M15 Masculins", body: "Retour sur la victoire de nos M15 face à l'USF Volley Ball. Nos jeunes joueurs ont montré une belle détermination sur le terrain.", date: "2026-04-11", tag: "Matchs" },
+  { id: 3, title: "Inscriptions saison 2026-2027", body: "Les inscriptions pour la prochaine saison sont ouvertes ! Rendez-vous sur notre page contact ou au gymnase pour plus d'informations. Toutes les catégories sont concernées.", date: "2026-04-08", tag: "Club" },
+  { id: 4, title: "Tournoi Loisirs FSGT", body: "Notre section loisirs FSGT organise un tournoi le lundi 23 mars à 20h au Gymnase Alice Milliat. Venez nombreux encourager nos équipes !", date: "2026-03-20", tag: "Événements" },
+];
+
+let teams = [
+  { id: "sm1", name: "Séniors Masculins 1", category: "Séniors", level: "Régionale", players: 12, training: "Mardi & Jeudi 20h-22h", emoji: "🏐", image: null },
+  { id: "sm2", name: "Séniors Masculins 2", category: "Séniors", level: "Départementale", players: 10, training: "Lundi & Mercredi 20h-22h", emoji: "🏐", image: null },
+  { id: "sf1", name: "Séniors Féminines 1", category: "Séniors", level: "Régionale", players: 11, training: "Mardi & Jeudi 18h-20h", emoji: "🏐", image: null },
+  { id: "m18f", name: "M18 Féminines", category: "Jeunes", level: "Départementale", players: 10, training: "Mercredi 17h-19h", emoji: "🌟", image: null },
+  { id: "m15m", name: "M15 Masculins", category: "Jeunes", level: "Départementale", players: 12, training: "Mercredi 14h-16h", emoji: "🌟", image: null },
+  { id: "m13f", name: "M13 Féminines", category: "Jeunes", level: "Départementale", players: 9, training: "Samedi 10h-12h", emoji: "🌟", image: null },
+  { id: "loisirs", name: "Loisirs FSGT", category: "Loisirs", level: "FSGT", players: 15, training: "Vendredi 20h-22h", emoji: "✨", image: null },
+];
+
+let stats = [
+  { key: "teams", label: "Équipes", value: "7" },
+  { key: "players", label: "Joueurs", value: "80+" },
+  { key: "posts", label: "Publications", value: "140" },
+  { key: "followers", label: "Abonnés", value: "818" },
+];
+
+let events = [
+  { id: 1, title: "Tournoi de printemps", type: "Tournoi", date: "2026-04-26", time: "10:00", location: "Gymnase Alice Milliat", desc: "Tournoi ouvert à toutes les équipes du club. Inscriptions au gymnase avant le 20 avril." },
+  { id: 2, title: "Réunion de fin de saison", type: "Réunion", date: "2026-05-10", time: "19:00", location: "Gymnase Alice Milliat", desc: "Bilan de la saison 2025-2026 et présentation des projets pour la saison prochaine." },
+  { id: 3, title: "Stage intensif M15", type: "Entraînement", date: "2026-05-20", time: "09:00", location: "Gymnase Alice Milliat", desc: "Stage de deux jours pour les jeunes M15 Masculins et M18 Féminines. Matériel requis." },
+];
+
+let sectionVisibility = {
+  hero: true,
+  matches: true,
+  events: true,
+  news: true,
+};
+
+let currentPage = "home";
+let isAdmin = false;
+let newsFilter = "Tous";
+let teamsFilter = "Tous";
+let eventsFilter = "Tous";
+let editingMatchId = null;
+let editingEventId = null;
+let editingNewsId = null;
+
+// ─── Helpers ───
+function fmtDate(s) {
+  const d = new Date(s);
+  return { day: d.getDate(), month: MONTHS_FR[d.getMonth()], full: d.getDate() + " " + MONTHS_FR[d.getMonth()] + " " + d.getFullYear() };
+}
+function fmtLong(s) {
+  const d = new Date(s);
+  return d.getDate() + " " + MONTHS_LONG[d.getMonth()] + " " + d.getFullYear();
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = "✓  " + msg;
+  t.classList.remove("hidden");
+  setTimeout(() => t.classList.add("hidden"), 2500);
+}
+
+// ─── Image upload helpers ───
+function previewImage(event, previewId) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("Image trop volumineuse (max 5 Mo)");
+    event.target.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const preview = document.getElementById(previewId);
+    preview.src = ev.target.result;
+    preview.style.display = "block";
+    const removeBtnId = event.target.id + "RemoveBtn";
+    const removeBtn = document.getElementById(removeBtnId);
+    if (removeBtn) removeBtn.style.display = "inline-flex";
+  };
+  reader.readAsDataURL(file);
+}
+function removeImage(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) input.value = "";
+  if (preview) { preview.src = ""; preview.style.display = "none"; }
+  const removeBtn = document.getElementById(inputId + "RemoveBtn");
+  if (removeBtn) removeBtn.style.display = "none";
+}
+
+// ─── Navigation ───
+function navigate(page) {
+  currentPage = page;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const el = document.getElementById("page-" + page);
+  if (el) { el.classList.add("active"); el.classList.remove("page-enter"); void el.offsetWidth; el.classList.add("page-enter"); }
+  document.querySelectorAll(".nav-link").forEach(l => {
+    l.classList.toggle("active", l.dataset.page === page);
+  });
+  document.getElementById("navLinks").classList.remove("open");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  renderPage();
+}
+
+function toggleMobileNav() {
+  document.getElementById("navLinks").classList.toggle("open");
+}
+
+const ADMIN_PASSWORD = "crvb";
+
+function toggleAdmin() {
+  if (!isAdmin) {
+    openLogin();
+  } else {
+    navigate("admin");
+  }
+}
+function openLogin() {
+  document.getElementById("loginPassword").value = "";
+  document.getElementById("loginError").classList.add("hidden");
+  document.getElementById("loginModal").classList.remove("hidden");
+  setTimeout(() => document.getElementById("loginPassword").focus(), 100);
+}
+function closeLogin() {
+  document.getElementById("loginModal").classList.add("hidden");
+}
+function submitLogin() {
+  const pwd = document.getElementById("loginPassword").value;
+  if (pwd === ADMIN_PASSWORD) {
+    isAdmin = true;
+    document.getElementById("adminExit").style.display = "flex";
+    closeLogin();
+    navigate("admin");
+    showToast("Connexion réussie");
+  } else {
+    document.getElementById("loginError").classList.remove("hidden");
+    document.getElementById("loginPassword").value = "";
+    document.getElementById("loginPassword").focus();
+  }
+}
+function exitAdmin() {
+  isAdmin = false;
+  document.getElementById("adminExit").style.display = "none";
+  navigate("home");
+  showToast("Déconnexion");
+}
+
+// ─── Render functions ───
+function renderMatchCard(m, i) {
+  const d = fmtDate(m.date);
+  return `<div class="card match-card fade-up stagger-${Math.min(i+1,7)}">
+    <div class="match-date-block">
+      <div class="match-date-day">${d.day}</div>
+      <div class="match-date-month">${d.month}</div>
+    </div>
+    <div class="match-teams">
+      <div class="match-vs">
+        <span>${m.team1}</span>
+        <span class="match-vs-badge">VS</span>
+        <span>${m.team2}</span>
+      </div>
+      <div class="match-meta">
+        <span class="match-meta-item"><svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg> ${m.time}</span>
+        <span class="match-meta-item"><svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg> ${m.location}, ${m.city}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderNewsCard(n, i) {
+  return `<div class="card news-card fade-up stagger-${Math.min(i+2,7)}" style="${n.image ? 'padding-top:0;overflow:hidden' : ''}">
+    ${n.image ? `<img src="${n.image}" alt="${n.title}" class="card-image">` : ""}
+    <div class="news-tag">${n.tag}</div>
+    <div class="news-card-title">${n.title}</div>
+    <div class="news-card-body">${n.body}</div>
+    <div class="news-card-date">${fmtLong(n.date)}</div>
+  </div>`;
+}
+
+function renderTeamCard(t, i) {
+  const lc = t.level === "Régionale" ? "regionale" : t.level === "FSGT" ? "fsgt" : "departementale";
+  return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${t.image ? 'padding-top:0;overflow:hidden' : ''}">
+    ${t.image ? `<img src="${t.image}" alt="${t.name}" class="card-image">` : ""}
+    <div class="team-card-header">
+      <div class="team-emoji">${t.emoji}</div>
+      <div class="team-level-badge team-level-${lc}">${t.level}</div>
+    </div>
+    <div class="team-name">${t.name}</div>
+    <div class="team-category">${t.category}</div>
+    <div class="team-details">
+      <div class="team-detail"><span class="team-detail-label">Joueurs</span><span class="team-detail-value">${t.players}</span></div>
+      <div class="team-detail"><span class="team-detail-label">Entraînements</span><span class="team-detail-value">${t.training}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderEventCard(e, i) {
+  const d = fmtDate(e.date);
+  const typeKey = e.type === "Réunion" ? "reunion" : e.type === "Entraînement" ? "entrainement" : e.type === "Tournoi" ? "tournoi" : "autre";
+  return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${e.image ? 'padding-top:0;overflow:hidden' : ''}">
+    ${e.image ? `<img src="${e.image}" alt="${e.title}" class="card-image">` : ""}
+    <div class="event-card-top">
+      <div class="event-date-badge">
+        <div class="event-date-day">${d.day}</div>
+        <div class="event-date-month">${d.month}</div>
+      </div>
+      <span class="event-type-badge event-type-${typeKey}">${e.type}</span>
+    </div>
+    <div class="event-title">${e.title}</div>
+    <div class="event-desc">${e.desc}</div>
+    <div class="event-meta">
+      <span class="event-meta-item"><svg class="icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg> ${e.time}</span>
+      ${e.location ? `<span class="event-meta-item"><svg class="icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg> ${e.location}</span>` : ""}
+    </div>
+  </div>`;
+}
+
+function renderFilterBar(containerId, tags, active, onClickFn) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = tags.map(tag =>
+    `<button class="btn btn-sm ${active === tag ? 'btn-primary' : 'btn-secondary'}" onclick="${onClickFn}('${tag}')">${tag}</button>`
+  ).join("");
+}
+
+function applySectionVisibility() {
+  const map = {
+    hero: "home-hero-section",
+    matches: "home-matches-section",
+    events: "home-events-section",
+    news: "home-news-section",
+  };
+  Object.keys(map).forEach(key => {
+    const el = document.getElementById(map[key]);
+    if (el) el.style.display = sectionVisibility[key] ? "" : "none";
+  });
+}
+
+function renderVisibilityToggles() {
+  const c = document.getElementById("visibilityToggles");
+  if (!c) return;
+  const items = [
+    { key: "hero", label: "Accueil (Hero)", desc: "Bannière principale avec le titre et les boutons d'action" },
+    { key: "matches", label: "Prochains matchs", desc: "Section du calendrier des matchs à venir" },
+    { key: "events", label: "Prochains événements", desc: "Section des événements du club" },
+    { key: "news", label: "Dernières nouvelles", desc: "Section des actualités du club" },
+  ];
+  c.innerHTML = items.map(it => `
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-row-label">${it.label}</div>
+        <div class="toggle-row-desc">${it.desc}</div>
+      </div>
+      <div class="toggle-switch ${sectionVisibility[it.key] ? 'on' : ''}" onclick="toggleSection('${it.key}')"></div>
+    </div>
+  `).join("");
+}
+
+function toggleSection(key) {
+  sectionVisibility[key] = !sectionVisibility[key];
+  showToast(sectionVisibility[key] ? "Section affichée" : "Section masquée");
+  renderPage();
+}
+
+function renderPage() {
+  // Home stats
+  const ss = document.getElementById("statsStrip");
+  if (ss) ss.innerHTML = stats.map(s => `<div class="stat-item"><div class="stat-value">${s.value}</div><div class="stat-label">${s.label}</div></div>`).join("");
+
+  // Admin stats form
+  const sg = document.getElementById("statsAdminGrid");
+  if (sg) sg.innerHTML = stats.map((s,i) => `
+    <div class="input-group">
+      <label class="input-label">${s.label}</label>
+      <input class="input" id="statInput-${s.key}" value="${s.value}" placeholder="Ex: 7 ou 80+">
+    </div>`).join("");
+
+  // Home matches
+  const upcoming = [...matches].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+  const hm = document.getElementById("homeMatches");
+  hm.innerHTML = upcoming.length ? upcoming.map((m,i) => renderMatchCard(m,i)).join("") : '<div class="empty-state"><p>Aucun match programmé pour le moment</p></div>';
+
+  // Home events
+  const upcomingEvt = [...events].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+  const he = document.getElementById("homeEvents");
+  he.innerHTML = upcomingEvt.length ? upcomingEvt.map((e,i) => renderEventCard(e,i)).join("") : '<div class="empty-state"><p>Aucun événement programmé pour le moment</p></div>';
+
+  // Home news
+  const sortedNews = [...news].sort((a,b) => new Date(b.date) - new Date(a.date));
+  document.getElementById("homeNews").innerHTML = sortedNews.slice(0, 3).map((n,i) => renderNewsCard(n,i)).join("");
+
+  // Events page
+  renderFilterBar("eventsFilters", ["Tous","Tournoi","Réunion","Entraînement","Autre"], eventsFilter, "setEventsFilter");
+  const fe = eventsFilter === "Tous" ? events : events.filter(e => e.type === eventsFilter);
+  const eg = document.getElementById("eventsGrid");
+  eg.innerHTML = fe.length ? [...fe].sort((a,b) => new Date(a.date) - new Date(b.date)).map((e,i) => renderEventCard(e,i)).join("") : '<div class="empty-state"><p>Aucun événement dans cette catégorie</p></div>';
+
+  // News page
+  renderFilterBar("newsFilters", ["Tous","Résultats","Matchs","Club","Événements"], newsFilter, "setNewsFilter");
+  const fn = (newsFilter === "Tous" ? news : news.filter(n => n.tag === newsFilter));
+  const fnSorted = [...fn].sort((a,b) => new Date(b.date) - new Date(a.date));
+  document.getElementById("newsGrid").innerHTML = fnSorted.length ? fnSorted.map((n,i) => renderNewsCard(n,i)).join("") : '<div class="empty-state"><p>Aucune actualité dans cette catégorie</p></div>';
+
+  // Teams page
+  renderFilterBar("teamsFilters", ["Tous","Séniors","Jeunes","Loisirs"], teamsFilter, "setTeamsFilter");
+  const ft = teamsFilter === "Tous" ? teams : teams.filter(t => t.category === teamsFilter);
+  document.getElementById("teamsGrid").innerHTML = ft.map((t,i) => renderTeamCard(t,i)).join("");
+
+  // Admin
+  renderAdminList();
+  renderAdminEventList();
+  renderAdminNewsList();
+  renderVisibilityToggles();
+  renderAdminTeamImages();
+
+  // Apply visibility last
+  applySectionVisibility();
+}
+
+// ─── Filters ───
+function setNewsFilter(f) { newsFilter = f; renderPage(); }
+function setTeamsFilter(f) { teamsFilter = f; renderPage(); }
+function setEventsFilter(f) { eventsFilter = f; renderPage(); }
+
+// ─── Contact ───
+function sendContact() {
+  const card = document.getElementById("contactFormCard");
+  card.innerHTML = `<div class="contact-success">
+    <div class="contact-success-icon">✓</div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:6px">Message envoyé !</div>
+    <div style="font-size:14px;color:var(--text-secondary)">Nous reviendrons vers vous rapidement.</div>
+    <button class="btn btn-secondary" style="margin-top:20px" onclick="resetContact()">Nouveau message</button>
+  </div>`;
+}
+function resetContact() {
+  const card = document.getElementById("contactFormCard");
+  card.innerHTML = `<div class="contact-form">
+    <div class="input-group"><label class="input-label">Nom complet</label><input class="input" placeholder="Votre nom"></div>
+    <div class="input-group"><label class="input-label">Email</label><input class="input" type="email" placeholder="votre@email.com"></div>
+    <div class="input-group"><label class="input-label">Sujet</label><input class="input" placeholder="Inscription, renseignements..."></div>
+    <div class="input-group"><label class="input-label">Message</label><textarea class="textarea" placeholder="Votre message..."></textarea></div>
+    <button class="btn btn-primary" style="align-self:flex-start;margin-top:4px" onclick="sendContact()">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Envoyer
+    </button>
+  </div>`;
+}
+
+// ─── Admin Matchs ───
+function submitMatch() {
+  const t1 = document.getElementById("adminTeam1").value.trim();
+  const t2 = document.getElementById("adminTeam2").value.trim();
+  const d = document.getElementById("adminDate").value;
+  const tm = document.getElementById("adminTime").value;
+  const loc = document.getElementById("adminLocation").value.trim();
+  const city = document.getElementById("adminCity").value.trim();
+  if (!t1 || !t2 || !d || !tm) return;
+  if (editingMatchId !== null) {
+    const m = matches.find(x => x.id === editingMatchId);
+    if (m) { m.team1=t1; m.team2=t2; m.date=d; m.time=tm; m.location=loc||"Gymnase Alice Milliat"; m.city=city||"Choisy-le-Roi"; }
+    showToast("Match modifié avec succès");
+    cancelEditMatch();
+  } else {
+    matches.push({ id: Date.now(), team1: t1, team2: t2, date: d, time: tm, location: loc || "Gymnase Alice Milliat", city: city || "Choisy-le-Roi" });
+    resetMatchForm();
+    showToast("Match ajouté avec succès");
+  }
+  renderPage();
+}
+function editMatch(id) {
+  const m = matches.find(x => x.id === id); if (!m) return;
+  editingMatchId = id;
+  document.getElementById("adminTeam1").value = m.team1;
+  document.getElementById("adminTeam2").value = m.team2;
+  document.getElementById("adminDate").value = m.date;
+  document.getElementById("adminTime").value = m.time;
+  document.getElementById("adminLocation").value = m.location;
+  document.getElementById("adminCity").value = m.city;
+  document.getElementById("matchSubmitLabel").textContent = "Enregistrer les modifications";
+  document.getElementById("matchCancelBtn").style.display = "inline-flex";
+  document.getElementById("adminTeam1").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function cancelEditMatch() {
+  editingMatchId = null;
+  resetMatchForm();
+  document.getElementById("matchSubmitLabel").textContent = "Ajouter le match";
+  document.getElementById("matchCancelBtn").style.display = "none";
+}
+function resetMatchForm() {
+  document.getElementById("adminTeam1").value = "";
+  document.getElementById("adminTeam2").value = "";
+  document.getElementById("adminDate").value = "";
+  document.getElementById("adminTime").value = "";
+  document.getElementById("adminLocation").value = "Gymnase Alice Milliat";
+  document.getElementById("adminCity").value = "Choisy-le-Roi";
+}
+function deleteMatch(id) {
+  matches = matches.filter(m => m.id !== id);
+  if (editingMatchId === id) cancelEditMatch();
+  showToast("Match supprimé");
+  renderPage();
+}
+function renderAdminList() {
+  const c = document.getElementById("adminMatchList");
+  c.innerHTML = `<div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">Matchs programmés (${matches.length})</div>` +
+    (matches.length ? [...matches].sort((a,b) => new Date(b.date) - new Date(a.date)).map(m => {
+      const d = fmtDate(m.date);
+      return `<div class="admin-match-row">
+        <div style="flex:1;min-width:0">
+          <div class="admin-match-teams">${m.team1} vs ${m.team2}</div>
+          <div class="admin-match-detail">${d.full} · ${m.time} · ${m.location}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="editMatch(${m.id})" title="Modifier">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMatch(${m.id})" title="Supprimer">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucun match programmé</p></div>');
+}
+
+// ─── Team Images Admin ───
+function renderAdminTeamImages() {
+  const c = document.getElementById("adminTeamImages");
+  if (!c) return;
+  c.innerHTML = teams.map(t => `
+    <div class="team-image-row">
+      <div class="team-image-thumb">
+        ${t.image ? `<img src="${t.image}" alt="${t.name}">` : t.emoji}
+      </div>
+      <div class="team-image-info">
+        <div class="team-image-name">${t.name}</div>
+        <div class="team-image-meta">${t.category} · ${t.level}</div>
+      </div>
+      <div class="team-image-actions">
+        <label class="btn btn-secondary btn-sm">
+          <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          ${t.image ? "Changer" : "Uploader"}
+          <input type="file" accept="image/*" style="display:none" onchange="uploadTeamImage('${t.id}', event)">
+        </label>
+        ${t.image ? `<button class="btn btn-danger btn-sm" onclick="removeTeamImage('${t.id}')">
+          <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+function uploadTeamImage(teamId, event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("Image trop volumineuse (max 5 Mo)");
+    event.target.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const team = teams.find(t => t.id === teamId);
+    if (team) {
+      team.image = ev.target.result;
+      showToast("Image de l'équipe mise à jour");
+      renderPage();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+function removeTeamImage(teamId) {
+  const team = teams.find(t => t.id === teamId);
+  if (team) {
+    team.image = null;
+    showToast("Image supprimée");
+    renderPage();
+  }
+}
+
+// ─── Stats Admin ───
+function saveStats() {
+  stats.forEach(s => {
+    const el = document.getElementById("statInput-" + s.key);
+    if (el) s.value = el.value.trim() || s.value;
+  });
+  showToast("Statistiques mises à jour");
+  renderPage();
+}
+
+// ─── Events Admin ───
+function submitEvent() {
+  const title = document.getElementById("evtTitle").value.trim();
+  const type = document.getElementById("evtType").value;
+  const date = document.getElementById("evtDate").value;
+  const time = document.getElementById("evtTime").value;
+  const location = document.getElementById("evtLocation").value.trim();
+  const desc = document.getElementById("evtDesc").value.trim();
+  if (!title || !date || !time) return;
+  const preview = document.getElementById("evtImagePreview");
+  const image = preview.style.display !== "none" ? preview.src : null;
+  if (editingEventId !== null) {
+    const e = events.find(x => x.id === editingEventId);
+    if (e) { e.title=title; e.type=type; e.date=date; e.time=time; e.location=location; e.desc=desc; e.image=image; }
+    showToast("Événement modifié avec succès");
+    cancelEditEvent();
+  } else {
+    events.push({ id: Date.now(), title, type, date, time, location, desc, image });
+    resetEventForm();
+    showToast("Événement ajouté avec succès");
+  }
+  renderPage();
+}
+function editEvent(id) {
+  const e = events.find(x => x.id === id); if (!e) return;
+  editingEventId = id;
+  document.getElementById("evtTitle").value = e.title;
+  document.getElementById("evtType").value = e.type;
+  document.getElementById("evtDate").value = e.date;
+  document.getElementById("evtTime").value = e.time;
+  document.getElementById("evtLocation").value = e.location || "";
+  document.getElementById("evtDesc").value = e.desc || "";
+  const preview = document.getElementById("evtImagePreview");
+  if (e.image) {
+    preview.src = e.image;
+    preview.style.display = "block";
+    document.getElementById("evtImageRemoveBtn").style.display = "inline-flex";
+  } else {
+    preview.style.display = "none";
+    preview.src = "";
+    document.getElementById("evtImageRemoveBtn").style.display = "none";
+  }
+  document.getElementById("evtSubmitLabel").textContent = "Enregistrer les modifications";
+  document.getElementById("evtCancelBtn").style.display = "inline-flex";
+  document.getElementById("evtTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function cancelEditEvent() {
+  editingEventId = null;
+  resetEventForm();
+  document.getElementById("evtSubmitLabel").textContent = "Ajouter l'événement";
+  document.getElementById("evtCancelBtn").style.display = "none";
+}
+function resetEventForm() {
+  document.getElementById("evtTitle").value = "";
+  document.getElementById("evtType").value = "Tournoi";
+  document.getElementById("evtDate").value = "";
+  document.getElementById("evtTime").value = "";
+  document.getElementById("evtLocation").value = "";
+  document.getElementById("evtDesc").value = "";
+  removeImage("evtImage", "evtImagePreview");
+}
+function deleteEvent(id) {
+  events = events.filter(e => e.id !== id);
+  if (editingEventId === id) cancelEditEvent();
+  showToast("Événement supprimé");
+  renderPage();
+}
+function renderAdminEventList() {
+  const c = document.getElementById("adminEventList");
+  c.innerHTML = `<div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">Événements programmés (${events.length})</div>` +
+    (events.length ? [...events].sort((a,b) => new Date(b.date)-new Date(a.date)).map(e => {
+      const d = fmtDate(e.date);
+      return `<div class="admin-match-row">
+        <div style="flex:1;min-width:0">
+          <div class="admin-match-teams">${e.title}</div>
+          <div class="admin-match-detail">${d.full} · ${e.time} · ${e.type}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="editEvent(${e.id})" title="Modifier">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEvent(${e.id})" title="Supprimer">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucun événement programmé</p></div>');
+}
+
+// ─── News Admin ───
+function submitNews() {
+  const title = document.getElementById("newsTitle").value.trim();
+  const tag = document.getElementById("newsTag").value;
+  const date = document.getElementById("newsDate").value;
+  const body = document.getElementById("newsBody").value.trim();
+  if (!title || !date || !body) return;
+  const preview = document.getElementById("newsImagePreview");
+  const image = preview.style.display !== "none" ? preview.src : null;
+  if (editingNewsId !== null) {
+    const n = news.find(x => x.id === editingNewsId);
+    if (n) { n.title=title; n.tag=tag; n.date=date; n.body=body; n.image=image; }
+    showToast("Actualité modifiée avec succès");
+    cancelEditNews();
+  } else {
+    news.unshift({ id: Date.now(), title, tag, date, body, image });
+    resetNewsForm();
+    showToast("Actualité ajoutée avec succès");
+  }
+  renderPage();
+}
+function editNews(id) {
+  const n = news.find(x => x.id === id); if (!n) return;
+  editingNewsId = id;
+  document.getElementById("newsTitle").value = n.title;
+  document.getElementById("newsTag").value = n.tag;
+  document.getElementById("newsDate").value = n.date;
+  document.getElementById("newsBody").value = n.body;
+  const preview = document.getElementById("newsImagePreview");
+  if (n.image) {
+    preview.src = n.image;
+    preview.style.display = "block";
+    document.getElementById("newsImageRemoveBtn").style.display = "inline-flex";
+  } else {
+    preview.style.display = "none";
+    preview.src = "";
+    document.getElementById("newsImageRemoveBtn").style.display = "none";
+  }
+  document.getElementById("newsSubmitLabel").textContent = "Enregistrer les modifications";
+  document.getElementById("newsCancelBtn").style.display = "inline-flex";
+  document.getElementById("newsTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function cancelEditNews() {
+  editingNewsId = null;
+  resetNewsForm();
+  document.getElementById("newsSubmitLabel").textContent = "Ajouter l'actualité";
+  document.getElementById("newsCancelBtn").style.display = "none";
+}
+function resetNewsForm() {
+  document.getElementById("newsTitle").value = "";
+  document.getElementById("newsTag").value = "Résultats";
+  document.getElementById("newsDate").value = "";
+  document.getElementById("newsBody").value = "";
+  removeImage("newsImage", "newsImagePreview");
+}
+function deleteNews(id) {
+  news = news.filter(n => n.id !== id);
+  if (editingNewsId === id) cancelEditNews();
+  showToast("Actualité supprimée");
+  renderPage();
+}
+function renderAdminNewsList() {
+  const c = document.getElementById("adminNewsList");
+  c.innerHTML = `<div style="font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">Actualités publiées (${news.length})</div>` +
+    (news.length ? [...news].sort((a,b) => new Date(b.date)-new Date(a.date)).map(n => {
+      const d = fmtDate(n.date);
+      return `<div class="admin-match-row">
+        <div style="flex:1;min-width:0">
+          <div class="admin-match-teams">${n.title}</div>
+          <div class="admin-match-detail">${d.full} · ${n.tag}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="editNews(${n.id})" title="Modifier">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNews(${n.id})" title="Supprimer">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucune actualité publiée</p></div>');
+}
+
+// ─── Init ───
+renderPage();
+</script>
+</body>
+</html>
