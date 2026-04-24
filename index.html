@@ -500,6 +500,7 @@ body::before {
   display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px;
 }
 
+<<<<<<< HEAD
 /* ═══ Login Modal ═══ */
 .login-modal {
   position: fixed; inset: 0; z-index: 500;
@@ -631,6 +632,8 @@ body::before {
 .team-image-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .team-image-actions label.btn { cursor: pointer; }
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 /* ═══ Toast ═══ */
 .toast {
   position: fixed; bottom: 24px; right: 24px; z-index: 300;
@@ -755,7 +758,11 @@ body::before {
 
   <!-- ══ HOME PAGE ══ -->
   <div class="page active" id="page-home">
+<<<<<<< HEAD
     <section class="hero" id="home-hero-section">
+=======
+    <section class="hero">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
       <div class="hero-bg"></div>
       <div class="hero-grid"></div>
       <div class="container">
@@ -792,7 +799,11 @@ body::before {
     </div>
 
     <!-- Upcoming matches -->
+<<<<<<< HEAD
     <section class="section" id="home-matches-section">
+=======
+    <section class="section">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
       <div class="container">
         <div class="section-header fade-up">
           <div class="section-label">Calendrier</div>
@@ -804,7 +815,11 @@ body::before {
     </section>
 
     <!-- Upcoming events -->
+<<<<<<< HEAD
     <section class="section" style="padding-top:0" id="home-events-section">
+=======
+    <section class="section" style="padding-top:0">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
       <div class="container">
         <div class="section-row">
           <div>
@@ -821,7 +836,11 @@ body::before {
     </section>
 
     <!-- Latest news -->
+<<<<<<< HEAD
     <section class="section" style="padding-top:0" id="home-news-section">
+=======
+    <section class="section" style="padding-top:0">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
       <div class="container">
         <div class="section-row">
           <div>
@@ -954,6 +973,7 @@ body::before {
           <div class="section-subtitle">Ajouter, modifier ou supprimer les matchs et événements</div>
         </div>
 
+<<<<<<< HEAD
         <!-- Admin visibilité des sections -->
         <div class="admin-panel fade-up" style="margin-bottom:24px">
           <div class="admin-header">
@@ -968,6 +988,8 @@ body::before {
           </div>
         </div>
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
         <!-- Admin statistiques -->
         <div class="admin-panel fade-up stagger-1" style="margin-bottom:24px">
           <div class="admin-header">
@@ -1072,6 +1094,7 @@ body::before {
                 <label class="input-label">Description</label>
                 <textarea class="textarea" placeholder="Décrivez l'événement..." id="evtDesc" style="min-height:80px"></textarea>
               </div>
+<<<<<<< HEAD
               <div class="input-group admin-form-full">
                 <label class="input-label">Image (optionnelle)</label>
                 <label class="image-upload-box" for="evtImage">
@@ -1081,6 +1104,8 @@ body::before {
                 </label>
                 <button type="button" class="btn btn-ghost btn-sm" id="evtImageRemoveBtn" onclick="removeImage('evtImage','evtImagePreview')" style="display:none;align-self:flex-start;color:var(--danger)">Supprimer l'image</button>
               </div>
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
               <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;flex-wrap:wrap">
                 <button class="btn btn-secondary" id="evtCancelBtn" onclick="cancelEditEvent()" style="display:none">Annuler</button>
                 <button class="btn btn-primary" id="evtSubmitBtn" onclick="submitEvent()">
@@ -1124,6 +1149,7 @@ body::before {
                 <label class="input-label">Contenu</label>
                 <textarea class="textarea" placeholder="Contenu de l'actualité..." id="newsBody" style="min-height:100px"></textarea>
               </div>
+<<<<<<< HEAD
               <div class="input-group admin-form-full">
                 <label class="input-label">Image (optionnelle)</label>
                 <label class="image-upload-box" for="newsImage">
@@ -1133,6 +1159,8 @@ body::before {
                 </label>
                 <button type="button" class="btn btn-ghost btn-sm" id="newsImageRemoveBtn" onclick="removeImage('newsImage','newsImagePreview')" style="display:none;align-self:flex-start;color:var(--danger)">Supprimer l'image</button>
               </div>
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
               <div class="admin-form-full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;flex-wrap:wrap">
                 <button class="btn btn-secondary" id="newsCancelBtn" onclick="cancelEditNews()" style="display:none">Annuler</button>
                 <button class="btn btn-primary" id="newsSubmitBtn" onclick="submitNews()">
@@ -1144,6 +1172,7 @@ body::before {
             <div class="admin-match-list" id="adminNewsList"></div>
           </div>
         </div>
+<<<<<<< HEAD
 
         <!-- Admin images équipes -->
         <div class="admin-panel fade-up" style="margin-top:24px">
@@ -1158,6 +1187,8 @@ body::before {
             <div id="adminTeamImages"></div>
           </div>
         </div>
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
       </div>
     </section>
   </div>
@@ -1184,6 +1215,7 @@ body::before {
   </div>
 </footer>
 
+<<<<<<< HEAD
 <!-- ═══════ LOGIN MODAL ═══════ -->
 <div class="login-modal hidden" id="loginModal">
   <div class="login-modal-overlay" onclick="closeLogin()"></div>
@@ -1215,6 +1247,8 @@ body::before {
   </div>
 </div>
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 <!-- ═══════ TOAST ═══════ -->
 <div class="toast hidden" id="toast"></div>
 
@@ -1237,6 +1271,7 @@ let news = [
   { id: 4, title: "Tournoi Loisirs FSGT", body: "Notre section loisirs FSGT organise un tournoi le lundi 23 mars à 20h au Gymnase Alice Milliat. Venez nombreux encourager nos équipes !", date: "2026-03-20", tag: "Événements" },
 ];
 
+<<<<<<< HEAD
 let teams = [
   { id: "sm1", name: "Séniors Masculins 1", category: "Séniors", level: "Régionale", players: 12, training: "Mardi & Jeudi 20h-22h", emoji: "🏐", image: null },
   { id: "sm2", name: "Séniors Masculins 2", category: "Séniors", level: "Départementale", players: 10, training: "Lundi & Mercredi 20h-22h", emoji: "🏐", image: null },
@@ -1245,6 +1280,16 @@ let teams = [
   { id: "m15m", name: "M15 Masculins", category: "Jeunes", level: "Départementale", players: 12, training: "Mercredi 14h-16h", emoji: "🌟", image: null },
   { id: "m13f", name: "M13 Féminines", category: "Jeunes", level: "Départementale", players: 9, training: "Samedi 10h-12h", emoji: "🌟", image: null },
   { id: "loisirs", name: "Loisirs FSGT", category: "Loisirs", level: "FSGT", players: 15, training: "Vendredi 20h-22h", emoji: "✨", image: null },
+=======
+const teams = [
+  { id: "sm1", name: "Séniors Masculins 1", category: "Séniors", level: "Régionale", players: 12, training: "Mardi & Jeudi 20h-22h", emoji: "🏐" },
+  { id: "sm2", name: "Séniors Masculins 2", category: "Séniors", level: "Départementale", players: 10, training: "Lundi & Mercredi 20h-22h", emoji: "🏐" },
+  { id: "sf1", name: "Séniors Féminines 1", category: "Séniors", level: "Régionale", players: 11, training: "Mardi & Jeudi 18h-20h", emoji: "🏐" },
+  { id: "m18f", name: "M18 Féminines", category: "Jeunes", level: "Départementale", players: 10, training: "Mercredi 17h-19h", emoji: "🌟" },
+  { id: "m15m", name: "M15 Masculins", category: "Jeunes", level: "Départementale", players: 12, training: "Mercredi 14h-16h", emoji: "🌟" },
+  { id: "m13f", name: "M13 Féminines", category: "Jeunes", level: "Départementale", players: 9, training: "Samedi 10h-12h", emoji: "🌟" },
+  { id: "loisirs", name: "Loisirs FSGT", category: "Loisirs", level: "FSGT", players: 15, training: "Vendredi 20h-22h", emoji: "✨" },
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 ];
 
 let stats = [
@@ -1260,6 +1305,7 @@ let events = [
   { id: 3, title: "Stage intensif M15", type: "Entraînement", date: "2026-05-20", time: "09:00", location: "Gymnase Alice Milliat", desc: "Stage de deux jours pour les jeunes M15 Masculins et M18 Féminines. Matériel requis." },
 ];
 
+<<<<<<< HEAD
 let sectionVisibility = {
   hero: true,
   matches: true,
@@ -1267,6 +1313,8 @@ let sectionVisibility = {
   news: true,
 };
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 let currentPage = "home";
 let isAdmin = false;
 let newsFilter = "Tous";
@@ -1292,6 +1340,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.add("hidden"), 2500);
 }
 
+<<<<<<< HEAD
 // ─── Image upload helpers ───
 function previewImage(event, previewId) {
   const file = event.target.files[0];
@@ -1321,6 +1370,8 @@ function removeImage(inputId, previewId) {
   if (removeBtn) removeBtn.style.display = "none";
 }
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 // ─── Navigation ───
 function navigate(page) {
   currentPage = page;
@@ -1339,6 +1390,7 @@ function toggleMobileNav() {
   document.getElementById("navLinks").classList.toggle("open");
 }
 
+<<<<<<< HEAD
 const ADMIN_PASSWORD = "crvb";
 
 function toggleAdmin() {
@@ -1369,13 +1421,25 @@ function submitLogin() {
     document.getElementById("loginError").classList.remove("hidden");
     document.getElementById("loginPassword").value = "";
     document.getElementById("loginPassword").focus();
+=======
+function toggleAdmin() {
+  if (!isAdmin) {
+    isAdmin = true;
+    document.getElementById("adminExit").style.display = "flex";
+    navigate("admin");
+  } else {
+    navigate("admin");
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
   }
 }
 function exitAdmin() {
   isAdmin = false;
   document.getElementById("adminExit").style.display = "none";
   navigate("home");
+<<<<<<< HEAD
   showToast("Déconnexion");
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 }
 
 // ─── Render functions ───
@@ -1401,8 +1465,12 @@ function renderMatchCard(m, i) {
 }
 
 function renderNewsCard(n, i) {
+<<<<<<< HEAD
   return `<div class="card news-card fade-up stagger-${Math.min(i+2,7)}" style="${n.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${n.image ? `<img src="${n.image}" alt="${n.title}" class="card-image">` : ""}
+=======
+  return `<div class="card news-card fade-up stagger-${Math.min(i+2,7)}">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
     <div class="news-tag">${n.tag}</div>
     <div class="news-card-title">${n.title}</div>
     <div class="news-card-body">${n.body}</div>
@@ -1412,8 +1480,12 @@ function renderNewsCard(n, i) {
 
 function renderTeamCard(t, i) {
   const lc = t.level === "Régionale" ? "regionale" : t.level === "FSGT" ? "fsgt" : "departementale";
+<<<<<<< HEAD
   return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${t.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${t.image ? `<img src="${t.image}" alt="${t.name}" class="card-image">` : ""}
+=======
+  return `<div class="card fade-up stagger-${Math.min(i+2,7)}">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
     <div class="team-card-header">
       <div class="team-emoji">${t.emoji}</div>
       <div class="team-level-badge team-level-${lc}">${t.level}</div>
@@ -1430,8 +1502,12 @@ function renderTeamCard(t, i) {
 function renderEventCard(e, i) {
   const d = fmtDate(e.date);
   const typeKey = e.type === "Réunion" ? "reunion" : e.type === "Entraînement" ? "entrainement" : e.type === "Tournoi" ? "tournoi" : "autre";
+<<<<<<< HEAD
   return `<div class="card fade-up stagger-${Math.min(i+2,7)}" style="${e.image ? 'padding-top:0;overflow:hidden' : ''}">
     ${e.image ? `<img src="${e.image}" alt="${e.title}" class="card-image">` : ""}
+=======
+  return `<div class="card fade-up stagger-${Math.min(i+2,7)}">
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
     <div class="event-card-top">
       <div class="event-date-badge">
         <div class="event-date-day">${d.day}</div>
@@ -1455,6 +1531,7 @@ function renderFilterBar(containerId, tags, active, onClickFn) {
   ).join("");
 }
 
+<<<<<<< HEAD
 function applySectionVisibility() {
   const map = {
     hero: "home-hero-section",
@@ -1494,6 +1571,8 @@ function toggleSection(key) {
   renderPage();
 }
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 function renderPage() {
   // Home stats
   const ss = document.getElementById("statsStrip");
@@ -1542,11 +1621,14 @@ function renderPage() {
   renderAdminList();
   renderAdminEventList();
   renderAdminNewsList();
+<<<<<<< HEAD
   renderVisibilityToggles();
   renderAdminTeamImages();
 
   // Apply visibility last
   applySectionVisibility();
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 }
 
 // ─── Filters ───
@@ -1654,6 +1736,7 @@ function renderAdminList() {
     }).join("") : '<div class="empty-state" style="padding:30px"><p style="font-size:14px">Aucun match programmé</p></div>');
 }
 
+<<<<<<< HEAD
 // ─── Team Images Admin ───
 function renderAdminTeamImages() {
   const c = document.getElementById("adminTeamImages");
@@ -1708,6 +1791,8 @@ function removeTeamImage(teamId) {
   }
 }
 
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 // ─── Stats Admin ───
 function saveStats() {
   stats.forEach(s => {
@@ -1727,6 +1812,7 @@ function submitEvent() {
   const location = document.getElementById("evtLocation").value.trim();
   const desc = document.getElementById("evtDesc").value.trim();
   if (!title || !date || !time) return;
+<<<<<<< HEAD
   const preview = document.getElementById("evtImagePreview");
   const image = preview.style.display !== "none" ? preview.src : null;
   if (editingEventId !== null) {
@@ -1736,6 +1822,15 @@ function submitEvent() {
     cancelEditEvent();
   } else {
     events.push({ id: Date.now(), title, type, date, time, location, desc, image });
+=======
+  if (editingEventId !== null) {
+    const e = events.find(x => x.id === editingEventId);
+    if (e) { e.title=title; e.type=type; e.date=date; e.time=time; e.location=location; e.desc=desc; }
+    showToast("Événement modifié avec succès");
+    cancelEditEvent();
+  } else {
+    events.push({ id: Date.now(), title, type, date, time, location, desc });
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
     resetEventForm();
     showToast("Événement ajouté avec succès");
   }
@@ -1750,6 +1845,7 @@ function editEvent(id) {
   document.getElementById("evtTime").value = e.time;
   document.getElementById("evtLocation").value = e.location || "";
   document.getElementById("evtDesc").value = e.desc || "";
+<<<<<<< HEAD
   const preview = document.getElementById("evtImagePreview");
   if (e.image) {
     preview.src = e.image;
@@ -1760,6 +1856,8 @@ function editEvent(id) {
     preview.src = "";
     document.getElementById("evtImageRemoveBtn").style.display = "none";
   }
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
   document.getElementById("evtSubmitLabel").textContent = "Enregistrer les modifications";
   document.getElementById("evtCancelBtn").style.display = "inline-flex";
   document.getElementById("evtTitle").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1777,7 +1875,10 @@ function resetEventForm() {
   document.getElementById("evtTime").value = "";
   document.getElementById("evtLocation").value = "";
   document.getElementById("evtDesc").value = "";
+<<<<<<< HEAD
   removeImage("evtImage", "evtImagePreview");
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 }
 function deleteEvent(id) {
   events = events.filter(e => e.id !== id);
@@ -1814,6 +1915,7 @@ function submitNews() {
   const date = document.getElementById("newsDate").value;
   const body = document.getElementById("newsBody").value.trim();
   if (!title || !date || !body) return;
+<<<<<<< HEAD
   const preview = document.getElementById("newsImagePreview");
   const image = preview.style.display !== "none" ? preview.src : null;
   if (editingNewsId !== null) {
@@ -1823,6 +1925,15 @@ function submitNews() {
     cancelEditNews();
   } else {
     news.unshift({ id: Date.now(), title, tag, date, body, image });
+=======
+  if (editingNewsId !== null) {
+    const n = news.find(x => x.id === editingNewsId);
+    if (n) { n.title=title; n.tag=tag; n.date=date; n.body=body; }
+    showToast("Actualité modifiée avec succès");
+    cancelEditNews();
+  } else {
+    news.unshift({ id: Date.now(), title, tag, date, body });
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
     resetNewsForm();
     showToast("Actualité ajoutée avec succès");
   }
@@ -1835,6 +1946,7 @@ function editNews(id) {
   document.getElementById("newsTag").value = n.tag;
   document.getElementById("newsDate").value = n.date;
   document.getElementById("newsBody").value = n.body;
+<<<<<<< HEAD
   const preview = document.getElementById("newsImagePreview");
   if (n.image) {
     preview.src = n.image;
@@ -1845,6 +1957,8 @@ function editNews(id) {
     preview.src = "";
     document.getElementById("newsImageRemoveBtn").style.display = "none";
   }
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
   document.getElementById("newsSubmitLabel").textContent = "Enregistrer les modifications";
   document.getElementById("newsCancelBtn").style.display = "inline-flex";
   document.getElementById("newsTitle").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1860,7 +1974,10 @@ function resetNewsForm() {
   document.getElementById("newsTag").value = "Résultats";
   document.getElementById("newsDate").value = "";
   document.getElementById("newsBody").value = "";
+<<<<<<< HEAD
   removeImage("newsImage", "newsImagePreview");
+=======
+>>>>>>> f491cdfc4f3306f9a52620ee1622b22ea2ac9f66
 }
 function deleteNews(id) {
   news = news.filter(n => n.id !== id);
